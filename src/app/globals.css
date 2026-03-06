@@ -1,26 +1,115 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* 1. DESIGN SYSTEM CONFIGURATION */
+@theme {
+  /* Font Family - Gunakan Plus Jakarta Sans sebagai identitas */
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Essential UI Colors */
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Branding: Winner Green & Secondary Blue */
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  /* Custom Functional Colors */
+  --color-warning: hsl(var(--warning));
+  --color-slate-blue: hsl(var(--slate-blue));
+
+  /* Essential Animations for Landing Page */
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+  --animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
+  --animate-float: float 3s ease-in-out infinite;
+
+  @keyframes fade-in {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* 2. COLOR VARIABLES (Light & Dark Theme) */
+@layer base {
+  :root {
+    /* Winner Green Branding */
+    --background: 150 10% 98%;
+    --foreground: 220 20% 10%;
+    --primary: 100 38% 42%; 
+    --primary-foreground: 0 0% 100%;
+    
+    /* UI Foundation */
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 10%;
+    --secondary: 230 70% 62%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 150 10% 94%;
+    --muted-foreground: 220 10% 46%;
+    --accent: 100 30% 93%;
+    --accent-foreground: 100 38% 25%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 100 38% 42%;
+    --radius: 0.75rem;
+
+    /* Semantic Colors */
+    --warning: 38 92% 50%;
+    --slate-blue: 230 70% 62%;
+  }
+
+  .dark {
+    --background: 220 20% 7%;
+    --foreground: 150 10% 95%;
+    --card: 220 20% 10%;
+    --card-foreground: 150 10% 95%;
+    --primary: 100 38% 48%;
+    --secondary: 230 70% 55%;
+    --border: 220 15% 18%;
+    --ring: 100 38% 48%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* 3. CORE UTILITIES */
+@layer utilities {
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-sm;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(100 38% 42%), hsl(230 70% 62%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--slate-blue) / 0.3);
+    border-radius: 3px;
+  }
 }
