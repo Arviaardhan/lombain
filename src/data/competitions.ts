@@ -1,0 +1,20 @@
+import { Competition } from "@/types/competition";
+
+export const categories = ["Web", "Mobile", "Business", "Data Science", "Design", "IoT"];
+
+export const skillsList = ["React", "Python", "Figma", "Laravel", "Flutter", "Node.js", "Machine Learning", "Strategy", "Cybersecurity", "Arduino", "Unity"];
+
+export const mockPosts: Competition[] = [
+  { id: "1", title: "Hackathon UI/UX 2026", desc: "Looking for passionate designers to create an award-winning healthcare app prototype.", category: "Design", slots: "2/4", skills: ["Figma", "Research", "Prototyping"], posted: "2 hours ago", campus: "Universitas Indonesia", lookingFor: ["Interaction Designer", "UX Researcher"], daysLeft: 18, applicants: 5 },
+  { id: "2", title: "National Data Science Cup", desc: "Need a statistician and ML engineer to analyze climate change datasets.", category: "Data Science", slots: "1/3", skills: ["Python", "ML", "Statistics"], posted: "5 hours ago", campus: "ITB", lookingFor: ["ML Engineer", "Statistician"], daysLeft: 3, applicants: 12 },
+  { id: "3", title: "Business Case Competition", desc: "Seeking finance and strategy experts for McKinsey-style case competition.", category: "Business", slots: "3/5", skills: ["Strategy", "Finance", "Presentation"], posted: "1 day ago", campus: "UGM", lookingFor: ["Finance Analyst", "Pitcher"], daysLeft: 14, applicants: 8 },
+  { id: "4", title: "Mobile App Challenge", desc: "Building a community fitness app. Need a Flutter dev and UI designer.", category: "Mobile", slots: "1/3", skills: ["Flutter", "Firebase", "UI Design"], posted: "3 hours ago", campus: "ITS", lookingFor: ["Flutter Developer", "UI Designer"], daysLeft: 5, applicants: 3 },
+  { id: "5", title: "Web Dev Marathon", desc: "48-hour web development sprint. Full-stack team needed.", category: "Web", slots: "2/4", skills: ["React", "Node.js", "TypeScript"], posted: "6 hours ago", campus: "UI", lookingFor: ["Frontend", "Backend"], daysLeft: 10, applicants: 7 },
+  { id: "6", title: "IoT Smart Campus", desc: "Developing IoT solution for campus energy management.", category: "IoT", slots: "2/5", skills: ["Arduino", "Python", "3D Print"], posted: "1 day ago", campus: "ITB", lookingFor: ["Hardware Engineer"], daysLeft: 21, applicants: 2 },
+  { id: "7", title: "Cybersecurity War", desc: "Join our CTF team for the national championship. Need someone good at Pwn and Web.", category: "Web", slots: "1/4", skills: ["Linux", "Networking", "Security"], posted: "10 hours ago", campus: "Binus", lookingFor: ["Pwn Expert", "Web Sec"], daysLeft: 4, applicants: 15 },
+  { id: "8", title: "AI Chatbot Master", desc: "Creating a localized AI assistant for SMEs in Central Java.", category: "Data Science", slots: "2/3", skills: ["NLP", "Python", "API"], posted: "4 hours ago", campus: "Muria Kudus University", lookingFor: ["AI Engineer", "Backend Developer"], daysLeft: 30, applicants: 4 },
+  { id: "9", title: "E-Commerce Re-design", desc: "Redesigning a local marketplace for better conversion rates.", category: "Design", slots: "1/2", skills: ["Figma", "UX Writing", "UI Animation"], posted: "12 hours ago", campus: "Telkom University", lookingFor: ["UI Designer"], daysLeft: 12, applicants: 9 },
+  { id: "10", title: "Fintech Startup Pitch", desc: "Developing a micro-lending platform concept for students.", category: "Business", slots: "3/4", skills: ["Strategy", "Market Research", "Finance"], posted: "2 days ago", campus: "IPB", lookingFor: ["Business Dev", "Financial Modeler"], daysLeft: 2, applicants: 25 },
+  { id: "11", title: "Robotics Innovation", desc: "Building a delivery robot for campus environment using ROS.", category: "IoT", slots: "2/6", skills: ["C++", "ROS", "Electronics"], posted: "8 hours ago", campus: "ITS", lookingFor: ["Robotics Engineer", "Embedded Dev"], daysLeft: 45, applicants: 6 },
+  { id: "12", title: "Startup Weekend", desc: "Looking for developers and business people for 54-hour startup competition.", category: "Business", slots: "2/5", skills: ["React", "Strategy", "Pitch"], posted: "12 hours ago", campus: "UGM", lookingFor: ["Full-Stack Dev", "Pitcher"], daysLeft: 1, applicants: 20 }
+];
