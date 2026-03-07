@@ -30,7 +30,7 @@ export default function TalentFilterSidebar({
   toggleFilter,
   activeFilterCount,
 }: FilterSidebarProps) {
-  const renderCircularCheckbox = (
+  const renderCheckbox = (
     label: string,
     isChecked: boolean,
     onToggle: () => void,
@@ -80,7 +80,7 @@ export default function TalentFilterSidebar({
         <h4 className="text-sm font-bold mb-4">Jurusan</h4>
         <div className="space-y-3">
           {allMajors.map((m) =>
-            renderCircularCheckbox(m, selectedMajors.includes(m), () =>
+            renderCheckbox(m, selectedMajors.includes(m), () =>
               toggleFilter(selectedMajors, m, setSelectedMajors),
             ),
           )}
@@ -92,7 +92,7 @@ export default function TalentFilterSidebar({
         <h4 className="text-sm font-bold mb-4">Institusi</h4>
         <div className="space-y-3">
           {allInstitutions.map((i) =>
-            renderCircularCheckbox(i, selectedInstitutions.includes(i), () =>
+            renderCheckbox(i, selectedInstitutions.includes(i), () =>
               toggleFilter(selectedInstitutions, i, setSelectedInstitutions),
             ),
           )}
