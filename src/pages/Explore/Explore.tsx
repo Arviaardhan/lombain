@@ -37,8 +37,12 @@ export default function ExplorePage() {
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
         <header className="mb-10">
-          <h1 className="text-4xl font-extrabold tracking-tight">Explore Teams</h1>
-          <p className="mt-2 text-lg text-muted-foreground">Find the perfect team for your next competition</p>
+          <h1 className="text-4xl font-extrabold tracking-tight">
+            Explore Teams
+          </h1>
+          <p className="mt-2 text-lg text-muted-foreground">
+            Find the perfect team for your next competition
+          </p>
         </header>
 
         {/* Search Bar Row */}
@@ -60,7 +64,10 @@ export default function ExplorePage() {
             <Filter className="h-4 w-4" />
             Filters
             {activeFiltersCount > 0 && (
-              <Badge variant="secondary" className="ml-1 bg-primary text-white rounded-full px-1.5 text-[10px]">
+              <Badge
+                variant="secondary"
+                className="ml-1 bg-primary text-white rounded-full px-1.5 text-[10px]"
+              >
                 {activeFiltersCount}
               </Badge>
             )}
@@ -85,7 +92,9 @@ export default function ExplorePage() {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-6">
               <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-                {isLoading ? "Searching teams..." : `${filtered.length} Teams Available`}
+                {isLoading
+                  ? "Searching teams..."
+                  : `${filtered.length} Teams Available`}
               </p>
             </div>
             <AnimatePresence mode="wait">
@@ -113,8 +122,12 @@ export default function ExplorePage() {
                   <div className="flex flex-col items-center justify-center">
                     <Search className="h-16 w-16 text-muted-foreground/30" />
                     <div className="mt-6 space-y-2">
-                      <p className="text-xl font-bold">No teams match your criteria</p>
-                      <p className="text-muted-foreground">Try adjusting your filters or search terms.</p>
+                      <p className="text-xl font-bold">
+                        No teams match your criteria
+                      </p>
+                      <p className="text-muted-foreground">
+                        Try adjusting your filters or search terms.
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -124,7 +137,7 @@ export default function ExplorePage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="grid grid-cols-1 gap-6 lg:grid-cols-2"
+                  className="grid grid-cols-1 gap-6 lg:grid-cols-2 p-0"
                 >
                   {filtered.slice(0, visibleCount).map((post, i) => (
                     <CompetitionCard key={post.id} post={post} index={i} />
@@ -138,7 +151,7 @@ export default function ExplorePage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={() => setVisibleCount(prev => prev + 4)}
+                  onClick={() => setVisibleCount((prev) => prev + 4)}
                   className="rounded-xl px-12 font-bold hover:bg-primary hover:text-white transition-all shadow-md"
                 >
                   Load More Teams
