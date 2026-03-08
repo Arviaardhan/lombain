@@ -14,7 +14,7 @@ const testimonials = [
     name: "Adi Pratama",
     major: "Business Admin, UI",
     initials: "AP",
-    text: "As a business student, finding tech teammates was impossible. AlmamaterConnect matched me with developers who complemented our skills perfectly.",
+    text: "As a business student, finding tech teammates was impossible. Lombain.id matched me with developers who complemented our skills perfectly.",
     stars: 5,
   },
   {
@@ -56,7 +56,9 @@ export default function TestimonialsSection() {
                   <Star key={j} className="h-4 w-4 fill-warning text-warning" />
                 ))}
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-5">"{t.text}"</p>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+                "{t.text}"
+              </p>
               <div className="flex items-center gap-3">
                 <Avatar className="h-9 w-9">
                   <AvatarFallback className="text-xs font-semibold bg-accent text-accent-foreground">

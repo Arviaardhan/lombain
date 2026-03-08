@@ -37,7 +37,7 @@ export default function Navbar() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-lg font-bold tracking-tight">
-              Almamater<span className="text-primary">Connect</span>
+              Lombain<span className="text-primary">.id</span>
             </span>
           </Link>
 

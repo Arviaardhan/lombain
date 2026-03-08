@@ -4,7 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Trophy, X } from "lucide-react";
 
 const institutions = [
@@ -21,10 +27,37 @@ const institutions = [
 ];
 
 const masterCategories: Record<string, string[]> = {
-  IT: ["React", "Python", "TypeScript", "Node.js", "Flutter", "Machine Learning", "SQL", "Docker"],
-  Business: ["Financial Modeling", "Market Research", "Business Strategy", "Pitching", "Marketing"],
-  Creative: ["UI/UX Design", "Figma", "Illustration", "Video Editing", "Copywriting"],
-  Academic: ["Research Methods", "Academic Writing", "Data Analysis", "Public Speaking", "Debate"],
+  IT: [
+    "React",
+    "Python",
+    "TypeScript",
+    "Node.js",
+    "Flutter",
+    "Machine Learning",
+    "SQL",
+    "Docker",
+  ],
+  Business: [
+    "Financial Modeling",
+    "Market Research",
+    "Business Strategy",
+    "Pitching",
+    "Marketing",
+  ],
+  Creative: [
+    "UI/UX Design",
+    "Figma",
+    "Illustration",
+    "Video Editing",
+    "Copywriting",
+  ],
+  Academic: [
+    "Research Methods",
+    "Academic Writing",
+    "Data Analysis",
+    "Public Speaking",
+    "Debate",
+  ],
 };
 
 export default function Signup() {
@@ -37,7 +70,7 @@ export default function Signup() {
     ? masterCategories[skillCategory].filter(
         (s) =>
           s.toLowerCase().includes(skillInput.toLowerCase()) &&
-          !skills.includes(s)
+          !skills.includes(s),
       )
     : [];
 
@@ -62,7 +95,9 @@ export default function Signup() {
             <Trophy className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold">Create your account</h1>
-          <p className="mt-2 text-muted-foreground">Join AlmamaterConnect and find your dream team</p>
+          <p className="mt-2 text-muted-foreground">
+            Join Lombain.id and find your dream team
+          </p>
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
@@ -79,7 +114,12 @@ export default function Signup() {
             </div>
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@campus.ac.id" className="mt-1.5" />
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@campus.ac.id"
+                className="mt-1.5"
+              />
             </div>
             <div>
               <Label htmlFor="institution">Institution / Campus</Label>
@@ -89,26 +129,40 @@ export default function Signup() {
                 </SelectTrigger>
                 <SelectContent>
                   {institutions.map((inst) => (
-                    <SelectItem key={inst} value={inst}>{inst}</SelectItem>
+                    <SelectItem key={inst} value={inst}>
+                      {inst}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
               <Label htmlFor="major">Major / Department</Label>
-              <Input id="major" placeholder="e.g., Computer Science" className="mt-1.5" />
+              <Input
+                id="major"
+                placeholder="e.g., Computer Science"
+                className="mt-1.5"
+              />
             </div>
 
             {/* Skill Category + Tags */}
             <div>
               <Label>Skill Category</Label>
-              <Select value={skillCategory} onValueChange={(v) => { setSkillCategory(v); setSkillInput(""); }}>
+              <Select
+                value={skillCategory}
+                onValueChange={(v) => {
+                  setSkillCategory(v);
+                  setSkillInput("");
+                }}
+              >
                 <SelectTrigger className="mt-1.5">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.keys(masterCategories).map((cat) => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -140,7 +194,10 @@ export default function Signup() {
                           key={s}
                           type="button"
                           className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
-                          onMouseDown={(e) => { e.preventDefault(); addSkill(s); }}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            addSkill(s);
+                          }}
                         >
                           {s}
                         </button>
@@ -156,7 +213,10 @@ export default function Signup() {
                     {skills.map((skill) => (
                       <Badge key={skill} variant="secondary" className="gap-1">
                         {skill}
-                        <button type="button" onClick={() => removeSkill(skill)}>
+                        <button
+                          type="button"
+                          onClick={() => removeSkill(skill)}
+                        >
                           <X className="h-3 w-3" />
                         </button>
                       </Badge>
@@ -168,7 +228,12 @@ export default function Signup() {
 
             <div>
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="••••••••" className="mt-1.5" />
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                className="mt-1.5"
+              />
             </div>
             <Button className="w-full" size="lg">
               Create Account
@@ -177,7 +242,10 @@ export default function Signup() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to="/login" className="font-medium text-primary hover:underline">
+            <Link
+              to="/login"
+              className="font-medium text-primary hover:underline"
+            >
               Sign In
             </Link>
           </p>

@@ -8,7 +8,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "AlmamaterConnect",
+  title: "Lombain.id",
   description: "Connect with talented students from your campus",
 };
 

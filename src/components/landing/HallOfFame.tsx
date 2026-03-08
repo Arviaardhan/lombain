@@ -8,28 +8,32 @@ const successStories = [
   {
     teamName: "CodeCrafters UI",
     competition: "Hackathon Nasional 2025",
-    narrative: "Built an AI-powered healthcare dashboard in 48 hours and impressed judges with exceptional UX research methodology.",
+    narrative:
+      "Built an AI-powered healthcare dashboard in 48 hours and impressed judges with exceptional UX research methodology.",
     members: ["AP", "SN", "BA"],
     tag: "🏆 Grand Champion",
   },
   {
     teamName: "DataMinds UGM",
     competition: "Gemastik XVI - Data Mining",
-    narrative: "Developed a real-time sentiment analysis engine for Bahasa Indonesia that outperformed 120+ competing teams nationwide.",
+    narrative:
+      "Developed a real-time sentiment analysis engine for Bahasa Indonesia that outperformed 120+ competing teams nationwide.",
     members: ["RF", "DS"],
     tag: "🥇 Gold Medal",
   },
   {
     teamName: "PixelPerfect ITB",
     competition: "Google Solution Challenge 2025",
-    narrative: "Created an accessible e-learning platform for visually impaired students, earning recognition from Google's global jury.",
+    narrative:
+      "Created an accessible e-learning platform for visually impaired students, earning recognition from Google's global jury.",
     members: ["CD", "LK", "MP"],
     tag: "🌍 Top 100 Global",
   },
   {
     teamName: "BizInnovators",
     competition: "Startup Weekend Jakarta",
-    narrative: "Pitched a fintech solution for SME analytics that secured seed funding commitment from two angel investors during the event.",
+    narrative:
+      "Pitched a fintech solution for SME analytics that secured seed funding commitment from two angel investors during the event.",
     members: ["MP", "LK"],
     tag: "🚀 Best Pitch",
   },
@@ -50,7 +54,8 @@ export default function HallOfFame() {
           </div>
           <h2 className="text-3xl font-bold md:text-4xl">Success Stories</h2>
           <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
-            Real teams, real victories. See how AlmamaterConnect helped students win competitions across Indonesia.
+            Real teams, real victories. See how Lombain.id helped students win
+            competitions across Indonesia.
           </p>
         </motion.div>
 
@@ -73,12 +78,20 @@ export default function HallOfFame() {
                   <Award className="h-3 w-3" />
                   {story.tag}
                 </Badge>
-                <span className="text-xs text-muted-foreground font-medium">NEWS</span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  NEWS
+                </span>
               </div>
 
-              <h3 className="text-lg font-bold text-foreground">{story.teamName}</h3>
-              <p className="text-sm font-medium text-primary mt-0.5">{story.competition}</p>
-              <p className="text-sm text-muted-foreground mt-3 leading-relaxed">"{story.narrative}"</p>
+              <h3 className="text-lg font-bold text-foreground">
+                {story.teamName}
+              </h3>
+              <p className="text-sm font-medium text-primary mt-0.5">
+                {story.competition}
+              </p>
+              <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
+                "{story.narrative}"
+              </p>
 
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border">
                 <div className="flex -space-x-2">
@@ -91,7 +104,9 @@ export default function HallOfFame() {
                     </div>
                   ))}
                 </div>
-                <span className="text-xs text-muted-foreground ml-1">{story.members.length} members</span>
+                <span className="text-xs text-muted-foreground ml-1">
+                  {story.members.length} members
+                </span>
                 <Trophy className="h-4 w-4 text-lime ml-auto" />
               </div>
             </motion.div>
