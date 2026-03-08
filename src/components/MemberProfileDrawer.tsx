@@ -1,6 +1,18 @@
-import { Link } from "react-router-dom";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import Link from "next/link";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+} from "@/components/ui/drawer";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -43,10 +55,14 @@ function MemberContent({ member }: { member: MemberProfile }) {
       )}
       {member.skills && member.skills.length > 0 && (
         <div>
-          <p className="mb-2 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">Top Skills</p>
+          <p className="mb-2 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Top Skills
+          </p>
           <div className="flex flex-wrap justify-center gap-1.5">
             {member.skills.map((skill) => (
-              <Badge key={skill} variant="secondary">{skill}</Badge>
+              <Badge key={skill} variant="secondary">
+                {skill}
+              </Badge>
             ))}
           </div>
         </div>
@@ -59,7 +75,7 @@ function MemberContent({ member }: { member: MemberProfile }) {
         </a>
       )}
       {member.id && (
-        <Link to={`/profile/${member.id}`}>
+        <Link href={`/profile/${member.id}`}>
           <Button variant="outline" className="gap-2 mt-1">
             <ExternalLink className="h-4 w-4" /> View Full Profile
           </Button>
@@ -69,7 +85,11 @@ function MemberContent({ member }: { member: MemberProfile }) {
   );
 }
 
-export default function MemberProfileDrawer({ member, open, onOpenChange }: MemberProfileDrawerProps) {
+export default function MemberProfileDrawer({
+  member,
+  open,
+  onOpenChange,
+}: MemberProfileDrawerProps) {
   const isMobile = useIsMobile();
 
   if (!member) return null;

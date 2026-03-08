@@ -1,26 +1,92 @@
+"use client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Check, X, Bell, Users, Trophy, Clock, ArrowRight, MessageCircle, UserMinus, Shield, Crown } from "lucide-react";
-import { Link } from "react-router-dom";
+import {
+  Check,
+  X,
+  Bell,
+  Users,
+  Trophy,
+  Clock,
+  ArrowRight,
+  UserMinus,
+  Shield,
+  Crown,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import MemberProfileDrawer from "@/components/MemberProfileDrawer";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import confetti from "canvas-confetti";
 
 const initialRequests = [
-  { id: 1, name: "Budi Santoso", initials: "BS", role: "Interaction Designer", skills: ["Figma", "After Effects"], team: "Hackathon UI/UX 2026", time: "1 hour ago", message: "I have 2 years of experience in interaction design and won a design award last year.", major: "Visual Communication Design" },
-  { id: 2, name: "Lisa Chen", initials: "LC", role: "UX Researcher", skills: ["User Testing", "Analytics"], team: "Hackathon UI/UX 2026", time: "3 hours ago", message: "Passionate about healthcare UX. Currently writing my thesis on patient experience.", major: "Psychology" },
-  { id: 3, name: "Ravi Kumar", initials: "RK", role: "Frontend Developer", skills: ["React", "TypeScript"], team: "Web Dev Marathon", time: "5 hours ago", message: "Full-stack developer with experience in React and Node.js. Ready for the marathon!", major: "Computer Science" },
+  {
+    id: 1,
+    name: "Budi Santoso",
+    initials: "BS",
+    role: "Interaction Designer",
+    skills: ["Figma", "After Effects"],
+    team: "Hackathon UI/UX 2026",
+    time: "1 hour ago",
+    message:
+      "I have 2 years of experience in interaction design and won a design award last year.",
+    major: "Visual Communication Design",
+  },
+  {
+    id: 2,
+    name: "Lisa Chen",
+    initials: "LC",
+    role: "UX Researcher",
+    skills: ["User Testing", "Analytics"],
+    team: "Hackathon UI/UX 2026",
+    time: "3 hours ago",
+    message:
+      "Passionate about healthcare UX. Currently writing my thesis on patient experience.",
+    major: "Psychology",
+  },
+  {
+    id: 3,
+    name: "Ravi Kumar",
+    initials: "RK",
+    role: "Frontend Developer",
+    skills: ["React", "TypeScript"],
+    team: "Web Dev Marathon",
+    time: "5 hours ago",
+    message:
+      "Full-stack developer with experience in React and Node.js. Ready for the marathon!",
+    major: "Computer Science",
+  },
 ];
 
 const notifications = [
-  { id: 1, message: "Your request to join 'AI Chatbot Competition' was accepted!", type: "success", time: "30 min ago" },
-  { id: 2, message: "New member joined your team 'Hackathon UI/UX 2026'", type: "info", time: "2 hours ago" },
-  { id: 3, message: "Reminder: Competition deadline in 5 days", type: "warning", time: "1 day ago" },
+  {
+    id: 1,
+    message: "Your request to join 'AI Chatbot Competition' was accepted!",
+    type: "success",
+    time: "30 min ago",
+  },
+  {
+    id: 2,
+    message: "New member joined your team 'Hackathon UI/UX 2026'",
+    type: "info",
+    time: "2 hours ago",
+  },
+  {
+    id: 3,
+    message: "Reminder: Competition deadline in 5 days",
+    type: "warning",
+    time: "1 day ago",
+  },
 ];
 
 const initialTeams = [
@@ -30,7 +96,12 @@ const initialTeams = [
     total: 4,
     status: "Recruiting",
     members: [
-      { name: "You (Andi Pratama)", initials: "AP", role: "Team Leader", isLeader: true },
+      {
+        name: "You (Andi Pratama)",
+        initials: "AP",
+        role: "Team Leader",
+        isLeader: true,
+      },
       { name: "Sarah Chen", initials: "SC", role: "Member", isLeader: false },
     ],
   },
@@ -40,7 +111,12 @@ const initialTeams = [
     total: 4,
     status: "Full",
     members: [
-      { name: "You (Andi Pratama)", initials: "AP", role: "Team Leader", isLeader: true },
+      {
+        name: "You (Andi Pratama)",
+        initials: "AP",
+        role: "Team Leader",
+        isLeader: true,
+      },
       { name: "John Doe", initials: "JD", role: "Member", isLeader: false },
       { name: "Jane Smith", initials: "JS", role: "Member", isLeader: false },
       { name: "Alex Wong", initials: "AW", role: "Member", isLeader: false },
@@ -52,7 +128,12 @@ const initialTeams = [
     total: 4,
     status: "Recruiting",
     members: [
-      { name: "You (Andi Pratama)", initials: "AP", role: "Team Leader", isLeader: true },
+      {
+        name: "You (Andi Pratama)",
+        initials: "AP",
+        role: "Team Leader",
+        isLeader: true,
+      },
       { name: "Maria Garcia", initials: "MG", role: "Member", isLeader: false },
       { name: "Tom Lee", initials: "TL", role: "Member", isLeader: false },
     ],
@@ -64,7 +145,10 @@ export default function Dashboard() {
   const [teams, setTeams] = useState(initialTeams);
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [removeMember, setRemoveMember] = useState<{ teamName: string; memberName: string } | null>(null);
+  const [removeMember, setRemoveMember] = useState<{
+    teamName: string;
+    memberName: string;
+  } | null>(null);
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -77,7 +161,7 @@ export default function Dashboard() {
     });
   };
 
-  const handleApprove = (req: typeof initialRequests[0]) => {
+  const handleApprove = (req: (typeof initialRequests)[0]) => {
     setRequests((prev) => prev.filter((r) => r.id !== req.id));
     setTeams((prev) =>
       prev.map((t) =>
@@ -86,10 +170,18 @@ export default function Dashboard() {
               ...t,
               filled: t.filled + 1,
               status: t.filled + 1 >= t.total ? "Full" : "Recruiting",
-              members: [...t.members, { name: req.name, initials: req.initials, role: "Member", isLeader: false }],
+              members: [
+                ...t.members,
+                {
+                  name: req.name,
+                  initials: req.initials,
+                  role: "Member",
+                  isLeader: false,
+                },
+              ],
             }
-          : t
-      )
+          : t,
+      ),
     );
     fireConfetti();
     toast({
@@ -101,7 +193,10 @@ export default function Dashboard() {
 
   const handleDecline = (id: number) => {
     setRequests((prev) => prev.filter((r) => r.id !== id));
-    toast({ title: "Request Declined", description: "The applicant has been notified." });
+    toast({
+      title: "Request Declined",
+      description: "The applicant has been notified.",
+    });
   };
 
   const handleRemoveMember = () => {
@@ -113,16 +208,21 @@ export default function Dashboard() {
               ...t,
               filled: t.filled - 1,
               status: "Recruiting",
-              members: t.members.filter((m) => m.name !== removeMember.memberName),
+              members: t.members.filter(
+                (m) => m.name !== removeMember.memberName,
+              ),
             }
-          : t
-      )
+          : t,
+      ),
     );
-    toast({ title: "Member Removed", description: `${removeMember.memberName} has been removed from the team.` });
+    toast({
+      title: "Member Removed",
+      description: `${removeMember.memberName} has been removed from the team.`,
+    });
     setRemoveMember(null);
   };
 
-  const handleViewProfile = (req: typeof initialRequests[0]) => {
+  const handleViewProfile = (req: (typeof initialRequests)[0]) => {
     setSelectedMember({
       name: req.name,
       initials: req.initials,
@@ -137,19 +237,44 @@ export default function Dashboard() {
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="mt-2 text-muted-foreground">Manage your teams and requests</p>
+        <p className="mt-2 text-muted-foreground">
+          Manage your teams and requests
+        </p>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
         {/* Quick Stats */}
         <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
-            { icon: Users, label: "Active Teams", value: String(teams.length), color: "text-primary" },
-            { icon: Bell, label: "Pending Requests", value: String(requests.length), color: "text-secondary" },
-            { icon: Trophy, label: "Competitions", value: "5", color: "text-warning" },
+            {
+              icon: Users,
+              label: "Active Teams",
+              value: String(teams.length),
+              color: "text-primary",
+            },
+            {
+              icon: Bell,
+              label: "Pending Requests",
+              value: String(requests.length),
+              color: "text-secondary",
+            },
+            {
+              icon: Trophy,
+              label: "Competitions",
+              value: "5",
+              color: "text-warning",
+            },
             { icon: Clock, label: "Upcoming", value: "2", color: "text-info" },
           ].map((stat) => (
-            <motion.div key={stat.label} whileHover={{ scale: 1.03 }} className="rounded-2xl border border-border bg-card p-4">
+            <motion.div
+              key={stat.label}
+              whileHover={{ scale: 1.03 }}
+              className="rounded-2xl border border-border bg-card p-4"
+            >
               <stat.icon className={`h-5 w-5 ${stat.color}`} />
               <p className="mt-2 text-2xl font-bold">{stat.value}</p>
               <p className="text-xs text-muted-foreground">{stat.label}</p>
@@ -182,10 +307,16 @@ export default function Dashboard() {
           <TabsContent value="requests" className="space-y-4">
             <AnimatePresence mode="popLayout">
               {requests.length === 0 ? (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-2xl border border-border bg-card p-12 text-center">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="rounded-2xl border border-border bg-card p-12 text-center"
+                >
                   <Users className="mx-auto h-12 w-12 text-muted-foreground/50" />
                   <p className="mt-4 font-medium">No pending requests</p>
-                  <p className="mt-1 text-sm text-muted-foreground">You're all caught up! New requests will appear here.</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    You're all caught up! New requests will appear here.
+                  </p>
                 </motion.div>
               ) : (
                 requests.map((req) => (
@@ -194,7 +325,11 @@ export default function Dashboard() {
                     layout
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -100, transition: { duration: 0.2 } }}
+                    exit={{
+                      opacity: 0,
+                      x: -100,
+                      transition: { duration: 0.2 },
+                    }}
                     className="rounded-2xl border border-border bg-card p-5"
                   >
                     <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -206,18 +341,32 @@ export default function Dashboard() {
                         </Avatar>
                         <div>
                           <div className="flex items-center gap-2">
-                            <button onClick={() => handleViewProfile(req)} className="font-semibold hover:text-primary transition-colors hover:underline">
+                            <button
+                              onClick={() => handleViewProfile(req)}
+                              className="font-semibold hover:text-primary transition-colors hover:underline"
+                            >
                               {req.name}
                             </button>
-                            <span className="text-xs text-muted-foreground">· {req.time}</span>
+                            <span className="text-xs text-muted-foreground">
+                              · {req.time}
+                            </span>
                           </div>
                           <p className="text-sm text-muted-foreground">
-                            Wants to join <span className="font-medium text-foreground">{req.team}</span> as {req.role}
+                            Wants to join{" "}
+                            <span className="font-medium text-foreground">
+                              {req.team}
+                            </span>{" "}
+                            as {req.role}
                           </p>
-                          <p className="mt-2 text-sm text-muted-foreground italic">"{req.message}"</p>
+                          <p className="mt-2 text-sm text-muted-foreground italic">
+                            "{req.message}"
+                          </p>
                           <div className="mt-2 flex flex-wrap gap-1.5">
                             {req.skills.map((skill) => (
-                              <span key={skill} className="rounded-md bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground">
+                              <span
+                                key={skill}
+                                className="rounded-md bg-accent px-2 py-0.5 text-xs font-medium text-accent-foreground"
+                              >
                                 {skill}
                               </span>
                             ))}
@@ -225,10 +374,19 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <div className="flex gap-2 shrink-0">
-                        <Button size="sm" variant="outline" className="gap-1 text-destructive hover:bg-destructive hover:text-destructive-foreground" onClick={() => handleDecline(req.id)}>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="gap-1 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                          onClick={() => handleDecline(req.id)}
+                        >
                           <X className="h-4 w-4" /> Decline
                         </Button>
-                        <Button size="sm" className="gap-1" onClick={() => handleApprove(req)}>
+                        <Button
+                          size="sm"
+                          className="gap-1"
+                          onClick={() => handleApprove(req)}
+                        >
                           <Check className="h-4 w-4" /> Approve
                         </Button>
                       </div>
@@ -247,16 +405,22 @@ export default function Dashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex items-start gap-4 rounded-2xl border border-border bg-card p-4"
               >
-                <div className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                  notif.type === "success" ? "bg-accent text-accent-foreground" :
-                  notif.type === "warning" ? "bg-warning/10 text-warning" :
-                  "bg-secondary/10 text-secondary"
-                }`}>
+                <div
+                  className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+                    notif.type === "success"
+                      ? "bg-accent text-accent-foreground"
+                      : notif.type === "warning"
+                        ? "bg-warning/10 text-warning"
+                        : "bg-secondary/10 text-secondary"
+                  }`}
+                >
                   <Bell className="h-4 w-4" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm">{notif.message}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{notif.time}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {notif.time}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -268,9 +432,16 @@ export default function Dashboard() {
           <h2 className="text-lg font-semibold mb-4">My Teams</h2>
           <div className="grid gap-4">
             {teams.map((team) => (
-              <motion.div key={team.name} className="rounded-2xl border border-border bg-card overflow-hidden">
+              <motion.div
+                key={team.name}
+                className="rounded-2xl border border-border bg-card overflow-hidden"
+              >
                 <button
-                  onClick={() => setExpandedTeam(expandedTeam === team.name ? null : team.name)}
+                  onClick={() =>
+                    setExpandedTeam(
+                      expandedTeam === team.name ? null : team.name,
+                    )
+                  }
                   className="flex w-full items-center justify-between p-4 text-left transition-colors hover:bg-muted/50"
                 >
                   <div className="flex items-center gap-3">
@@ -279,14 +450,23 @@ export default function Dashboard() {
                     </div>
                     <div>
                       <p className="font-medium text-sm">{team.name}</p>
-                      <p className="text-xs text-muted-foreground">{team.filled}/{team.total} members</p>
+                      <p className="text-xs text-muted-foreground">
+                        {team.filled}/{team.total} members
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={team.status === "Recruiting" ? "default" : "outline"} className="text-xs">
+                    <Badge
+                      variant={
+                        team.status === "Recruiting" ? "default" : "outline"
+                      }
+                      className="text-xs"
+                    >
                       {team.status}
                     </Badge>
-                    <ArrowRight className={`h-4 w-4 text-muted-foreground transition-transform ${expandedTeam === team.name ? "rotate-90" : ""}`} />
+                    <ArrowRight
+                      className={`h-4 w-4 text-muted-foreground transition-transform ${expandedTeam === team.name ? "rotate-90" : ""}`}
+                    />
                   </div>
                 </button>
 
@@ -300,9 +480,14 @@ export default function Dashboard() {
                       className="overflow-hidden"
                     >
                       <div className="border-t border-border px-4 py-3 space-y-2">
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">Current Members</p>
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                          Current Members
+                        </p>
                         {team.members.map((member) => (
-                          <div key={member.name} className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/50">
+                          <div
+                            key={member.name}
+                            className="flex items-center justify-between rounded-xl p-2 hover:bg-muted/50"
+                          >
                             <div className="flex items-center gap-3">
                               <Avatar className="h-8 w-8">
                                 <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
@@ -310,14 +495,22 @@ export default function Dashboard() {
                                 </AvatarFallback>
                               </Avatar>
                               <div>
-                                <p className="text-sm font-medium">{member.name}</p>
+                                <p className="text-sm font-medium">
+                                  {member.name}
+                                </p>
                                 <div className="flex items-center gap-1.5">
                                   {member.isLeader ? (
-                                    <Badge variant="outline" className="gap-1 text-[10px] h-5 border-primary/30 text-primary">
+                                    <Badge
+                                      variant="outline"
+                                      className="gap-1 text-[10px] h-5 border-primary/30 text-primary"
+                                    >
                                       <Crown className="h-3 w-3" /> Team Leader
                                     </Badge>
                                   ) : (
-                                    <Badge variant="outline" className="gap-1 text-[10px] h-5">
+                                    <Badge
+                                      variant="outline"
+                                      className="gap-1 text-[10px] h-5"
+                                    >
                                       <Shield className="h-3 w-3" /> Member
                                     </Badge>
                                   )}
@@ -329,7 +522,12 @@ export default function Dashboard() {
                                 size="sm"
                                 variant="ghost"
                                 className="h-7 gap-1 text-xs text-muted-foreground hover:text-destructive"
-                                onClick={() => setRemoveMember({ teamName: team.name, memberName: member.name })}
+                                onClick={() =>
+                                  setRemoveMember({
+                                    teamName: team.name,
+                                    memberName: member.name,
+                                  })
+                                }
                               >
                                 <UserMinus className="h-3 w-3" /> Remove
                               </Button>
@@ -346,20 +544,41 @@ export default function Dashboard() {
         </div>
       </motion.div>
 
-      <MemberProfileDrawer member={selectedMember} open={drawerOpen} onOpenChange={setDrawerOpen} />
+      <MemberProfileDrawer
+        member={selectedMember}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+      />
 
       {/* Remove Member Confirmation */}
-      <Dialog open={!!removeMember} onOpenChange={(open) => !open && setRemoveMember(null)}>
+      <Dialog
+        open={!!removeMember}
+        onOpenChange={(open) => !open && setRemoveMember(null)}
+      >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Remove Member</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove <span className="font-semibold text-foreground">{removeMember?.memberName}</span> from <span className="font-semibold text-foreground">{removeMember?.teamName}</span>? This action cannot be undone.
+              Are you sure you want to remove{" "}
+              <span className="font-semibold text-foreground">
+                {removeMember?.memberName}
+              </span>{" "}
+              from{" "}
+              <span className="font-semibold text-foreground">
+                {removeMember?.teamName}
+              </span>
+              ? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setRemoveMember(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleRemoveMember} className="gap-1">
+            <Button variant="outline" onClick={() => setRemoveMember(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleRemoveMember}
+              className="gap-1"
+            >
               <UserMinus className="h-4 w-4" /> Remove
             </Button>
           </DialogFooter>
