@@ -71,12 +71,12 @@ export default function Navbar() {
               <Bell className="h-5 w-5" />
               <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border-2 border-background" />
             </Button>
-            <Link href="/login">
+            <Link href="/auth/login">
               <Button variant="ghost" size="sm">
                 Log In
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link href="/auth/signup">
               <Button size="sm">Sign Up</Button>
             </Link>
           </div>
@@ -100,12 +100,15 @@ export default function Navbar() {
         {mobileMenuOpen && (
           <div className="border-t border-border bg-background p-4 md:hidden animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="flex flex-col gap-2">
-              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start">
                   Log In
                 </Button>
               </Link>
-              <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/auth/signup"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 <Button className="w-full">Sign Up</Button>
               </Link>
             </div>
