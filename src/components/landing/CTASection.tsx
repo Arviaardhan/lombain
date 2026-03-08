@@ -25,7 +25,7 @@ export default function CTASection() {
           </p>
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             {/* Ganti 'to' menjadi 'href' */}
-            <Link href="/signup">
+            <Link href="/auth/signup">
               <Button
                 size="lg"
                 className="gap-2 px-8 font-semibold shadow-lg shadow-primary/25"
