@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={jakarta.variable}>
       <body className="font-sans antialiased">
-        {children} {/* Konten halaman (seperti Landing) akan muncul di sini */}
+        <main className="bg-slate-50/50">{children} </main>
       </body>
     </html>
   );
