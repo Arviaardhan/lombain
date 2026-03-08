@@ -20,12 +20,16 @@ export default function CTASection() {
             Ready to Find Your Team?
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Join hundreds of students already building winning teams on AlmamaterConnect.
+            Join hundreds of students already building winning teams on
+            Lombain.id.
           </p>
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             {/* Ganti 'to' menjadi 'href' */}
             <Link href="/signup">
-              <Button size="lg" className="gap-2 px-8 font-semibold shadow-lg shadow-primary/25">
+              <Button
+                size="lg"
+                className="gap-2 px-8 font-semibold shadow-lg shadow-primary/25"
+              >
                 Get Started Free <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
