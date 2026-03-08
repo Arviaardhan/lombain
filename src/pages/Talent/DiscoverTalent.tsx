@@ -17,12 +17,20 @@ import { Talent } from "@/types/talent";
 
 export default function DiscoverTalentPage() {
   const {
-    search, setSearch,
-    selectedMajors, setSelectedMajors,
-    selectedInstitutions, setSelectedInstitutions,
-    selectedSkills, setSelectedSkills,
-    toggleFilter, filtered, isLoading,
-    visibleCount, setVisibleCount, activeFilterCount
+    search,
+    setSearch,
+    selectedMajors,
+    setSelectedMajors,
+    selectedInstitutions,
+    setSelectedInstitutions,
+    selectedSkills,
+    setSelectedSkills,
+    toggleFilter,
+    filtered,
+    isLoading,
+    visibleCount,
+    setVisibleCount,
+    activeFilterCount,
   } = useTalents();
 
   const [inviteUser, setInviteUser] = useState<Talent | null>(null);
@@ -32,7 +40,9 @@ export default function DiscoverTalentPage() {
       {/* Header */}
       <div className="mb-10">
         <h1 className="text-4xl font-extrabold tracking-tight">Cari Bakat</h1>
-        <p className="text-lg text-muted-foreground mt-2">Temukan rekan setim hebat untuk kolaborasi lombamu.</p>
+        <p className="text-lg text-muted-foreground mt-2">
+          Temukan rekan setim hebat untuk kolaborasi lombamu.
+        </p>
       </div>
 
       {/* Search & Filter Trigger */}
@@ -42,7 +52,7 @@ export default function DiscoverTalentPage() {
           <Input
             placeholder="Cari nama atau keahlian..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             className="pl-12 h-12 rounded-xl shadow-sm"
           />
         </div>
@@ -73,22 +83,42 @@ export default function DiscoverTalentPage() {
 
           <AnimatePresence mode="wait">
             {isLoading ? (
-              <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, i) => <TalentSkeleton key={i} />)}
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
+              >
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <TalentSkeleton key={i} />
+                ))}
               </motion.div>
             ) : filtered.length === 0 ? (
-              <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="rounded-3xl border-2 border-dashed border-muted-foreground/15 p-20 text-center">
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="rounded-3xl border-2 border-dashed border-muted-foreground/15 p-20 text-center"
+              >
                 <Users className="h-16 w-16 mx-auto text-muted-foreground/30 mb-4" />
                 <p className="text-xl font-bold">Talent tidak ditemukan</p>
-                <p className="text-muted-foreground">Coba sesuaikan filter atau kata kunci pencarianmu.</p>
+                <p className="text-muted-foreground">
+                  Coba sesuaikan filter atau kata kunci pencarianmu.
+                </p>
               </motion.div>
             ) : (
-              <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {filtered.slice(0, visibleCount).map((user, i) => (
+              <motion.div
+                key="grid"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
+              >
+                {filtered.slice(0, visibleCount).map((user) => (
                   <TalentCard
+                    key={user.id}
                     user={user}
                     onInvite={() => setInviteUser(user)}
                   />
@@ -99,7 +129,12 @@ export default function DiscoverTalentPage() {
 
           {visibleCount < filtered.length && !isLoading && (
             <div className="flex justify-center mt-12">
-              <Button variant="outline" size="lg" onClick={() => setVisibleCount(v => v + 6)} className="px-12 rounded-xl font-bold">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setVisibleCount((v) => v + 6)}
+                className="px-12 rounded-xl font-bold"
+              >
                 Muat Lebih Banyak
               </Button>
             </div>
