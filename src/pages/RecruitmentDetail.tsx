@@ -324,7 +324,7 @@ export default function RecruitmentDetail({ id }: { id: string }) {
               className="rounded-2xl border border-border bg-card p-6"
             >
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-lime" /> Team Achievements
+                <Trophy className="h-5 w-5 text-primary" /> Team Achievements
               </h2>
 
               {/* Lineup Strength */}
@@ -333,15 +333,15 @@ export default function RecruitmentDetail({ id }: { id: string }) {
                   mockDetail.memberWins,
                 ).reduce((sum, w) => sum + w, 0);
                 return (
-                  <div className="rounded-xl border border-green-300 bg-green-50 p-4 mb-5">
+                  <div className="rounded-xl border border-primary/40 bg-accent/50 p-4 mb-5">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <Shield className="h-4 w-4 text-lime" />
+                        <Shield className="h-4 w-4 text-primary" />
                         <span className="text-sm font-semibold text-foreground">
                           Lineup Strength
                         </span>
                       </div>
-                      <span className="text-2xl font-bold text-lime">
+                      <span className="text-2xl font-bold text-primary">
                         {totalMemberWins}
                       </span>
                     </div>
@@ -366,7 +366,7 @@ export default function RecruitmentDetail({ id }: { id: string }) {
                             <span className="text-xs font-medium text-foreground">
                               {name.split(" ")[0]}
                             </span>
-                            <Badge className="bg-lime/15 text-lime border-0 text-[10px] h-4 px-1.5">
+                            <Badge className="bg-lime/15 text-primary border-0 text-[10px] h-4 px-1.5">
                               {wins}W
                             </Badge>
                           </div>
@@ -387,7 +387,7 @@ export default function RecruitmentDetail({ id }: { id: string }) {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-lime/10">
-                            <Award className="h-4 w-4 text-lime" />
+                            <Award className="h-4 w-4 text-primary" />
                           </div>
                           <div>
                             <p className="font-medium text-sm">
@@ -401,7 +401,7 @@ export default function RecruitmentDetail({ id }: { id: string }) {
                         <Badge
                           className={
                             a.result === "Winner"
-                              ? "bg-lime text-lime-foreground border-0 font-bold text-xs"
+                              ? "bg-lime text-primary-foreground border-0 font-bold text-xs"
                               : "bg-warning/15 text-warning border-warning/30 text-xs"
                           }
                         >
@@ -448,10 +448,10 @@ export default function RecruitmentDetail({ id }: { id: string }) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.28 }}
-                className="rounded-2xl border-2 border-lime/40 bg-card p-6"
+                className="rounded-2xl border-2 border-primary/40 bg-card p-6"
               >
                 <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-lime" /> Competition
+                  <BookOpen className="h-5 w-5 text-primary" /> Competition
                   Resources
                 </h2>
                 <p className="text-sm text-muted-foreground mb-4">
@@ -465,9 +465,9 @@ export default function RecruitmentDetail({ id }: { id: string }) {
                 >
                   <Button
                     variant="outline"
-                    className="w-full gap-3 h-14 text-base border-lime/40 hover:bg-lime/10 hover:border-lime"
+                    className="rounded-md w-full gap-3 h-14 text-base border-primary/40 hover:bg-primary/10 hover:border-lime"
                   >
-                    <ExternalLink className="h-5 w-5 text-lime" />
+                    <ExternalLink className="h-5 w-5 text-primary" />
                     Open Guidebook
                   </Button>
                 </a>
@@ -479,10 +479,10 @@ export default function RecruitmentDetail({ id }: { id: string }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="rounded-2xl border border-lime/30 bg-card p-6"
+              className="rounded-2xl border border-primary/40 bg-card p-6"
             >
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-lime" /> Resources & Guides
+                <BookOpen className="h-5 w-5 text-primary" /> Resources & Guides
               </h2>
               <div className="space-y-2.5">
                 {mockDetail.resources.map((res) => (
@@ -493,13 +493,13 @@ export default function RecruitmentDetail({ id }: { id: string }) {
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 rounded-xl border border-border p-3 transition-colors hover:bg-muted/50 hover:border-lime/30 group"
                   >
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-lime/10 group-hover:bg-lime/20 transition-colors">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent group-hover:bg-accent transition-colors">
                       {res.type === "pdf" ? (
-                        <FileText className="h-4 w-4 text-lime" />
+                        <FileText className="h-4 w-4 text-primary" />
                       ) : res.type === "doc" ? (
-                        <FileText className="h-4 w-4 text-lime" />
+                        <FileText className="h-4 w-4 text-primary" />
                       ) : (
-                        <BookOpen className="h-4 w-4 text-lime" />
+                        <BookOpen className="h-4 w-4 text-primary" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -508,7 +508,7 @@ export default function RecruitmentDetail({ id }: { id: string }) {
                         {res.type}
                       </p>
                     </div>
-                    <Download className="h-4 w-4 text-muted-foreground group-hover:text-lime transition-colors shrink-0" />
+                    <Download className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                   </a>
                 ))}
               </div>
