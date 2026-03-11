@@ -1,9 +1,9 @@
-import RecruitmentDetail from "@/pages/RecruitmentDetail";
+import DetailTeamPage from "@/pages/DetailTeam/DetailTeam";
 
-export default function IdPage({ params }: { params: { id: string } }) {
+export default function DetailTeam() {
   return (
     <>
-      <RecruitmentDetail id={params.id} />
+      <DetailTeamPage />
     </>
   );
 }

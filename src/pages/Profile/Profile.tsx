@@ -60,7 +60,6 @@ export default function Profile() {
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="animate-fade-in">
-        {/* Profile Header */}
         <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div className="flex items-start gap-5">
@@ -85,7 +84,6 @@ export default function Profile() {
             </Button>
           </div>
 
-          {/* Stats */}
           <div className="mt-6 grid grid-cols-3 gap-4 rounded-xl bg-muted/50 p-4">
             <div className="text-center">
               <p className="text-2xl font-bold text-primary">
@@ -109,7 +107,6 @@ export default function Profile() {
         </div>
 
         <div className="mt-6 grid gap-6 md:grid-cols-3">
-          {/* Skills */}
           <div className="md:col-span-2 space-y-6">
             <div className="rounded-2xl border border-border bg-card p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -124,7 +121,6 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Teams */}
             <div className="rounded-2xl border border-border bg-card p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" /> Teams & Projects
@@ -158,7 +154,6 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Portfolio Links */}
           <div>
             <div className="rounded-2xl border border-border bg-card p-6">
               <h2 className="text-lg font-semibold mb-4">Portfolio Links</h2>

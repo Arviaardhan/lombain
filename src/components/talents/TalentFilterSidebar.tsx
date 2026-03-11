@@ -18,6 +18,7 @@ interface FilterSidebarProps {
     setter: (v: string[]) => void,
   ) => void;
   activeFilterCount: number;
+  isMobile?: boolean; 
 }
 
 export default function TalentFilterSidebar({
@@ -29,7 +30,9 @@ export default function TalentFilterSidebar({
   setSelectedSkills,
   toggleFilter,
   activeFilterCount,
+  isMobile, 
 }: FilterSidebarProps) {
+  
   const renderCheckbox = (
     label: string,
     isChecked: boolean,
@@ -56,7 +59,10 @@ export default function TalentFilterSidebar({
   );
 
   return (
-    <div className="sticky top-24 rounded-2xl border border-border bg-card p-6 space-y-7 shadow-sm">
+    <div className={cn(
+      "space-y-7",
+      !isMobile && "sticky top-24 rounded-2xl border border-border bg-card p-6 shadow-sm"
+    )}>
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-xs uppercase tracking-widest text-muted-foreground">
           Filter Bakat
@@ -68,9 +74,9 @@ export default function TalentFilterSidebar({
               setSelectedInstitutions([]);
               setSelectedSkills([]);
             }}
-            className="text-xs text-primary font-bold hover:underline"
+            className="text-xs text-[#5A8D39] font-bold hover:underline"
           >
-            Hapus
+            Hapus Semua
           </button>
         )}
       </div>
@@ -87,7 +93,6 @@ export default function TalentFilterSidebar({
         </div>
       </div>
 
-      {/* Institution Filter */}
       <div>
         <h4 className="text-sm font-bold mb-4">Institusi</h4>
         <div className="space-y-3">
@@ -99,7 +104,6 @@ export default function TalentFilterSidebar({
         </div>
       </div>
 
-      {/* Skills Filter */}
       <div>
         <h4 className="text-sm font-bold mb-3">Keahlian</h4>
         <div className="flex flex-wrap gap-2">
@@ -110,8 +114,8 @@ export default function TalentFilterSidebar({
               className={cn(
                 "rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
                 selectedSkills.includes(s)
-                  ? "bg-primary text-white shadow-md shadow-primary/20"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80",
+                  ? "bg-[#5A8D39] text-white shadow-md shadow-green-100"
+                  : "bg-slate-50 text-slate-500 hover:bg-slate-100",
               )}
             >
               {s}
