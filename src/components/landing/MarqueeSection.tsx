@@ -10,7 +10,7 @@ const categories = [
 
 function MarqueeRow({ reverse = false }: { reverse?: boolean }) {
   return (
-    <div className="flex overflow-hidden">
+    <div className="flex">
       <motion.div
         className="flex shrink-0 gap-4"
         animate={{ x: reverse ? ["0%", "-50%"] : ["-50%", "0%"] }}
@@ -42,7 +42,7 @@ export default function MarqueeSection() {
           Supported Competition Categories
         </motion.p>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-6">
         <MarqueeRow />
         <MarqueeRow reverse />
       </div>

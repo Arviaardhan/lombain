@@ -12,6 +12,7 @@ interface FilterSidebarProps {
   toggleCategory: (cat: string) => void;
   toggleSkill: (skill: string) => void;
   clearAll: () => void;
+  isMobile?: boolean;
 }
 
 export default function FilterSidebar({
@@ -22,9 +23,10 @@ export default function FilterSidebar({
   toggleCategory,
   toggleSkill,
   clearAll,
+  isMobile
 }: FilterSidebarProps) {
   return (
-    <aside className="hidden w-64 shrink-0 md:block">
+    <aside className={isMobile ? "w-full" : "w-64 shrink-0"}>
       <div className="sticky top-24 rounded-2xl border border-border bg-card p-6 space-y-6 shadow-sm">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-sm uppercase tracking-widest text-muted-foreground">

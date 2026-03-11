@@ -8,7 +8,9 @@ export default function MainLayout({
   return (
     <>
       <Navbar />
-      {children}
+      <main className="pb-20 md:pb-0">
+          {children}
+        </main>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import CreateRecruitment from "@/pages/CreateRecruitment";
+import CreateRecruitment from "@/pages/CreateRecruitment/CreateRecruitment";
 
 export default function Explore() {
   return (
