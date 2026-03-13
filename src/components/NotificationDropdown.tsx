@@ -117,7 +117,7 @@ export default function NotificationDropdown() {
           </AnimatePresence>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-96 p-0 bg-white" align="end">
+      <PopoverContent className="w-96 p-0 bg-white border-border" align="end">
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <h3 className="font-semibold text-sm">Notifications</h3>
           {unreadCount > 0 && (
