@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import NotificationDropdown from "../NotificationDropdown";
 
 const navItems = [
   { href: "/", icon: Home, label: "Home" },
@@ -66,11 +67,8 @@ export default function Navbar() {
           </nav>
 
           {/* Desktop Right Actions */}
-          <div className="hidden items-center gap-3 md:flex">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border-2 border-background" />
-            </Button>
+          <div className="hidden items-center gap-2 md:flex">
+            <NotificationDropdown />
             <Link href="/auth/login">
               <Button variant="ghost" size="sm">
                 Log In
@@ -81,16 +79,16 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile Menu Toggle */}
           <div className="flex items-center gap-2 md:hidden">
+            <NotificationDropdown />
             <button
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              className="p-2 rounded-lg hover:bg-muted"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-5 w-5" />
               )}
             </button>
           </div>

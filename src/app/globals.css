@@ -34,61 +34,151 @@
   --animate-float: float 3s ease-in-out infinite;
 
   @keyframes fade-in {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   @keyframes fade-in-up {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
 }
 
 /* 2. COLOR VARIABLES (Light & Dark Theme) */
 @layer base {
   :root {
-    /* Winner Green Branding */
     --background: 150 10% 98%;
     --foreground: 220 20% 10%;
-    --primary: 100 38% 42%; 
-    --primary-foreground: 0 0% 100%;
-    
-    /* UI Foundation */
+
     --card: 0 0% 100%;
     --card-foreground: 220 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
+
+    --primary: 100 38% 42%;
+    --primary-foreground: 0 0% 100%;
+
     --secondary: 230 70% 62%;
     --secondary-foreground: 0 0% 100%;
+
     --muted: 150 10% 94%;
     --muted-foreground: 220 10% 46%;
+
     --accent: 100 30% 93%;
     --accent-foreground: 100 38% 25%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
     --border: 220 13% 91%;
     --input: 220 13% 91%;
     --ring: 100 38% 42%;
+
     --radius: 0.75rem;
 
-    /* Semantic Colors */
-    --warning: 38 92% 50%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 100 38% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 100 30% 93%;
+    --sidebar-accent-foreground: 100 38% 25%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 100 38% 42%;
+
+    --emerald-glow: 100 38% 48%;
     --slate-blue: 230 70% 62%;
+    --slate-blue-light: 230 70% 95%;
+    --footer-bg: 225 25% 14%;
+    --footer-foreground: 220 15% 80%;
+    --footer-muted: 220 15% 50%;
+    --success: 100 38% 42%;
+    --warning: 38 92% 50%;
+    --info: 230 70% 62%;
+    --lime: 100 38% 42%;
+    --lime-foreground: 0 0% 0%;
   }
 
   .dark {
     --background: 220 20% 7%;
     --foreground: 150 10% 95%;
+
     --card: 220 20% 10%;
     --card-foreground: 150 10% 95%;
+
+    --popover: 220 20% 10%;
+    --popover-foreground: 150 10% 95%;
+
     --primary: 100 38% 48%;
+    --primary-foreground: 0 0% 100%;
+
     --secondary: 230 70% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 60%;
+
+    --accent: 100 25% 15%;
+    --accent-foreground: 100 40% 65%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+
     --border: 220 15% 18%;
+    --input: 220 15% 18%;
     --ring: 100 38% 48%;
+
+    --sidebar-background: 220 20% 7%;
+    --sidebar-foreground: 150 10% 80%;
+    --sidebar-primary: 100 38% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 100 25% 15%;
+    --sidebar-accent-foreground: 100 40% 65%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 100 38% 48%;
+
+    --emerald-glow: 100 38% 52%;
+    --slate-blue: 230 70% 65%;
+    --slate-blue-light: 230 30% 18%;
+    --footer-bg: 225 25% 10%;
+    --footer-foreground: 220 15% 80%;
+    --footer-muted: 220 15% 45%;
+    --success: 100 38% 48%;
+    --warning: 38 92% 55%;
+    --info: 230 70% 65%;
+    --lime: 100 38% 48%;
+    --lime-foreground: 0 0% 0%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: "Plus Jakarta Sans", sans-serif;
   }
 }
 
@@ -98,6 +188,14 @@
     @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-sm;
   }
 
+  .gradient-emerald {
+    background: linear-gradient(135deg, hsl(100 38% 42%), hsl(100 38% 52%));
+  }
+
+  .gradient-hero {
+    background: linear-gradient(135deg, hsl(100 38% 42%), hsl(230 70% 62%));
+  }
+
   .gradient-text {
     background: linear-gradient(135deg, hsl(100 38% 42%), hsl(230 70% 62%));
     -webkit-background-clip: text;
@@ -105,12 +203,42 @@
     background-clip: text;
   }
 
+  .hover-lift {
+    @apply transition-all duration-300 ease-out;
+  }
+  .hover-lift:hover {
+    @apply -translate-y-1 shadow-lg;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-500 ease-out;
+  }
+  .hover-glow:hover {
+    box-shadow:
+      0 0 20px -5px hsl(var(--primary) / 0.15),
+      0 8px 24px -8px hsl(var(--primary) / 0.1);
+    border-color: hsl(var(--primary) / 0.2);
+  }
+
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: hsl(var(--slate-blue) / 0.3);
     border-radius: 3px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--slate-blue) / 0.5);
+  }
+
+  .btn-press {
+    @apply transition-transform duration-100;
+  }
+  .btn-press:active {
+    transform: scale(0.96);
   }
 }
 
