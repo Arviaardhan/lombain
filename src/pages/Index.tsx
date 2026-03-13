@@ -1,5 +1,15 @@
-import { Navigate } from "react-router-dom";
+"use client"; 
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-const Index = () => <Navigate to="/" replace />;
+const Index = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push('/'); 
+  }, [router]);
+
+  return null;
+};
 
 export default Index;
