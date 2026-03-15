@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trophy } from "lucide-react";
+import AppName from "@/components/AppName";
 
 export default function Login() {
   return (
@@ -16,7 +17,7 @@ export default function Login() {
           </div>
           <h1 className="text-2xl font-bold">Welcome back</h1>
           <p className="mt-2 text-muted-foreground">
-            Sign in to your Lombain.id account
+            Sign in to your <AppName span={false} /> account
           </p>
         </div>
 

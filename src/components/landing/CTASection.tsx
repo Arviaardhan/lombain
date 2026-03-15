@@ -4,6 +4,7 @@ import Link from "next/link"; // Next.js menggunakan Link dari 'next/link'
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Globe } from "lucide-react";
 import { motion } from "framer-motion";
+import AppName from "../AppName";
 
 export default function CTASection() {
   return (
@@ -20,8 +21,8 @@ export default function CTASection() {
             Ready to Find Your Team?
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Join hundreds of students already building winning teams on
-            Lombain.id.
+            Join hundreds of students already building winning teams on{" "}
+            <AppName span={false} />
           </p>
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             {/* Ganti 'to' menjadi 'href' */}

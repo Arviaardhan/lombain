@@ -17,6 +17,7 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import AppName from "../AppName";
 
 interface ContactModalProps {
   open: boolean;
@@ -73,7 +74,11 @@ export default function ContactModal({
         <ShieldCheck className="h-4 w-4 text-[#5A8D39] shrink-0 mt-0.5" />
         <p className="text-[11px] text-muted-foreground leading-snug">
           Informasi kontak ini hanya digunakan untuk keperluan kolaborasi
-          kompetisi melalui <strong>Lombain.id</strong>.
+          kompetisi melalui{" "}
+          <strong>
+            <AppName span={false} />
+          </strong>
+          .
         </p>
       </div>
     </div>
