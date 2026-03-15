@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Trophy, Award, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import AppName from "../AppName";
 
 const successStories = [
   {
@@ -54,8 +55,8 @@ export default function HallOfFame() {
           </div>
           <h2 className="text-3xl font-bold md:text-4xl">Success Stories</h2>
           <p className="mt-3 text-muted-foreground max-w-lg mx-auto">
-            Real teams, real victories. See how Lombain.id helped students win
-            competitions across Indonesia.
+            Real teams, real victories. See how <AppName span={false} /> helped
+            students win competitions across Indonesia.
           </p>
         </motion.div>
 

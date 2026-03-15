@@ -17,6 +17,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import NotificationDropdown from "../NotificationDropdown";
+import AppName from "../AppName";
 
 const navItems = [
   { href: "/", icon: Home, label: "Home" },
@@ -38,7 +39,7 @@ export default function Navbar() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-lg font-bold tracking-tight">
-              Lombain<span className="text-primary">.id</span>
+              <AppName span />
             </span>
           </Link>
 

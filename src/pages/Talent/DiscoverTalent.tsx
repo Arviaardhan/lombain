@@ -15,6 +15,7 @@ import InviteToTeamModal from "@/components/InviteToTeamModal";
 import { useTalents } from "@/hooks/use-talents";
 import { Talent } from "@/types/talent";
 import { cn } from "@/lib/utils";
+import AppName from "@/components/AppName";
 
 export default function DiscoverTalentPage() {
   const [showFilters, setShowFilters] = useState(true);
@@ -52,9 +53,12 @@ export default function DiscoverTalentPage() {
   return (
     <div className="container mx-auto px-4 py-12 min-h-screen bg-slate-50/30">
       <div className="mb-10">
-        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Cari Bakat</h1>
+        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
+          Cari Bakat
+        </h1>
         <p className="text-lg text-slate-600 mt-2">
-          Temukan rekan setim hebat untuk kolaborasi lombamu di AlmamaterConnect.
+          Temukan rekan setim hebat untuk kolaborasi lombamu di{" "}
+          <AppName span={false} />.
         </p>
       </div>
 
@@ -117,7 +121,9 @@ export default function DiscoverTalentPage() {
         <div className="flex-1">
           <div className="flex items-center justify-between mb-6">
             <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-              {isLoading ? "Mencari bakat..." : `${filtered.length} Talent Ditemukan`}
+              {isLoading
+                ? "Mencari bakat..."
+                : `${filtered.length} Talent Ditemukan`}
             </p>
           </div>
 
@@ -132,7 +138,7 @@ export default function DiscoverTalentPage() {
                   "grid gap-6 transition-all duration-500",
                   showFilters
                     ? "sm:grid-cols-2 xl:grid-cols-3"
-                    : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                    : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
                 )}
               >
                 {Array.from({ length: showFilters ? 6 : 8 }).map((_, i) => (
@@ -147,8 +153,12 @@ export default function DiscoverTalentPage() {
                 className="rounded-[2.5rem] border-2 border-dashed border-slate-200 bg-white p-20 text-center shadow-sm"
               >
                 <Users className="h-16 w-16 mx-auto text-slate-200 mb-4" />
-                <p className="text-xl font-bold text-slate-900">Talent tidak ditemukan</p>
-                <p className="text-slate-500 mt-1">Coba sesuaikan filter atau kata kunci pencarianmu.</p>
+                <p className="text-xl font-bold text-slate-900">
+                  Talent tidak ditemukan
+                </p>
+                <p className="text-slate-500 mt-1">
+                  Coba sesuaikan filter atau kata kunci pencarianmu.
+                </p>
               </motion.div>
             ) : (
               <motion.div
@@ -159,7 +169,7 @@ export default function DiscoverTalentPage() {
                   "grid gap-6 transition-all duration-500",
                   showFilters
                     ? "sm:grid-cols-2 xl:grid-cols-3"
-                    : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                    : "sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
                 )}
               >
                 {filtered.slice(0, visibleCount).map((user) => (
@@ -215,7 +225,9 @@ export default function DiscoverTalentPage() {
               <div className="mx-auto mb-8 h-1.5 w-16 rounded-full bg-slate-200" />
 
               <div className="mb-8 text-center">
-                <h3 className="text-2xl font-black text-slate-900">Filter Bakat</h3>
+                <h3 className="text-2xl font-black text-slate-900">
+                  Filter Bakat
+                </h3>
                 <p className="text-sm text-slate-500 font-medium mt-1">
                   Geser ke bawah untuk menutup
                 </p>
@@ -227,7 +239,7 @@ export default function DiscoverTalentPage() {
 
               <div className="mt-12 text-center py-6 border-t border-slate-50">
                 <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">
-                  AlmamaterConnect &bull; 2026
+                  <AppName span={false} /> &bull; 2026
                 </p>
               </div>
             </motion.div>

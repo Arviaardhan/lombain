@@ -1,5 +1,6 @@
 import Link from "next/link"; // Pindah ke Next Link
 import { Trophy } from "lucide-react";
+import AppName from "../AppName";
 
 // Mengganti properti 'to' menjadi 'href' agar lebih standar Next.js
 const navLinks = [
@@ -24,7 +25,9 @@ export default function FooterSection() {
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
                 <Trophy className="h-4.5 w-4.5 text-white" />
               </div>
-              <span className="text-lg font-bold text-white">Lombain.id</span>
+              <span className="text-lg font-bold text-white">
+                <AppName span={true} />
+              </span>
             </div>
             <p className="text-sm leading-relaxed text-[hsl(var(--footer-muted))] max-w-xs">
               Connecting ambition and collaboration. Build your team, win the
@@ -73,8 +76,8 @@ export default function FooterSection() {
 
         <div className="mt-12 pt-6 border-t border-white/10 text-center">
           <p className="text-xs text-[hsl(var(--footer-muted))]">
-            © {new Date().getFullYear()} Lombain.id. Built for students, by
-            students.
+            © {new Date().getFullYear()} <AppName span={false} />. Built for
+            students, by students.
           </p>
         </div>
       </div>
