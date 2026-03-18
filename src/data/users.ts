@@ -21,6 +21,17 @@ export interface UserDetail {
   email: string;
   teams: { name: string; role: string; status: string }[];
   projects: { name: string; description: string }[];
+  performance: {
+    month: string;
+    year: number;
+    participations: number;
+    wins: number;
+    competitions: {
+      name: string;
+      team: string;
+      result: "Winner" | "Runner-Up" | "Finalist" | "Participant";
+    }[];
+  }[];
   competitionHistory: {
     totalParticipated: number;
     wins: number;
@@ -56,6 +67,320 @@ export const mockUsers: Record<number, UserDetail> = {
         name: "GreenRoute App",
         description:
           "Perencana rute transportasi ramah lingkungan menggunakan AI.",
+      },
+    ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 4,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 5,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
       },
     ],
     competitionHistory: {
@@ -141,6 +466,329 @@ export const mockUsers: Record<number, UserDetail> = {
           "Sistem monitoring hutan pintar menggunakan sensor molekuler dan satelit.",
       },
     ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+          { name: "UI/UX Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 6,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+          { name: "Web Dev Marathon", team: "ByteForce", result: "Finalist" },
+          { name: "Design Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 7,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "ML Challenge", team: "NeuralNet", result: "Runner-Up" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "Open Source Fest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
+      },
+    ],
     competitionHistory: {
       totalParticipated: 6,
       wins: 2,
@@ -209,6 +857,329 @@ export const mockUsers: Record<number, UserDetail> = {
       {
         name: "HealthTrack Redesign",
         description: "Overhaul total UX untuk aplikasi pemantauan kesehatan.",
+      },
+    ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+          { name: "UI/UX Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 6,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+          { name: "Web Dev Marathon", team: "ByteForce", result: "Finalist" },
+          { name: "Design Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 7,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "ML Challenge", team: "NeuralNet", result: "Runner-Up" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "Open Source Fest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
       },
     ],
     competitionHistory: {
@@ -290,6 +1261,329 @@ export const mockUsers: Record<number, UserDetail> = {
           "Sistem penyiraman otomatis berbasis sensor kelembaban tanah.",
       },
     ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+          { name: "UI/UX Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 6,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+          { name: "Web Dev Marathon", team: "ByteForce", result: "Finalist" },
+          { name: "Design Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 7,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "ML Challenge", team: "NeuralNet", result: "Runner-Up" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "Open Source Fest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
+      },
+    ],
     competitionHistory: {
       totalParticipated: 7,
       wins: 2,
@@ -360,6 +1654,329 @@ export const mockUsers: Record<number, UserDetail> = {
       {
         name: "E-Commerce App",
         description: "Aplikasi belanja online dengan fitur real-time tracking.",
+      },
+    ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+          { name: "UI/UX Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 6,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+          { name: "Web Dev Marathon", team: "ByteForce", result: "Finalist" },
+          { name: "Design Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 7,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "ML Challenge", team: "NeuralNet", result: "Runner-Up" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "Open Source Fest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
       },
     ],
     competitionHistory: {
@@ -444,6 +2061,329 @@ export const mockUsers: Record<number, UserDetail> = {
       {
         name: "SentimentID",
         description: "Model analisis sentimen untuk tweet berbahasa Indonesia.",
+      },
+    ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+          { name: "UI/UX Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 6,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+          { name: "Web Dev Marathon", team: "ByteForce", result: "Finalist" },
+          { name: "Design Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 7,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "ML Challenge", team: "NeuralNet", result: "Runner-Up" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "Open Source Fest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
       },
     ],
     competitionHistory: {
@@ -537,6 +2477,329 @@ export const mockUsers: Record<number, UserDetail> = {
         description: "Program pemberdayaan komunitas lokal melalui teknologi.",
       },
     ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+          { name: "UI/UX Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 6,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+          { name: "Web Dev Marathon", team: "ByteForce", result: "Finalist" },
+          { name: "Design Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 7,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "ML Challenge", team: "NeuralNet", result: "Runner-Up" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "Open Source Fest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
+      },
+    ],
     competitionHistory: {
       totalParticipated: 10,
       wins: 6,
@@ -627,6 +2890,329 @@ export const mockUsers: Record<number, UserDetail> = {
         description: "Layanan autentikasi dengan enkripsi tingkat tinggi.",
       },
     ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+          { name: "UI/UX Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 6,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+          { name: "Web Dev Marathon", team: "ByteForce", result: "Finalist" },
+          { name: "Design Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 7,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "ML Challenge", team: "NeuralNet", result: "Runner-Up" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "Open Source Fest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
+      },
+    ],
     competitionHistory: {
       totalParticipated: 7,
       wins: 3,
@@ -709,6 +3295,329 @@ export const mockUsers: Record<number, UserDetail> = {
         description: "Perancangan ulang topologi jaringan kampus.",
       },
     ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+          { name: "UI/UX Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 6,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+          { name: "Web Dev Marathon", team: "ByteForce", result: "Finalist" },
+          { name: "Design Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 7,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "ML Challenge", team: "NeuralNet", result: "Runner-Up" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "Open Source Fest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
+      },
+    ],
     competitionHistory: {
       totalParticipated: 7,
       wins: 1,
@@ -789,6 +3698,329 @@ export const mockUsers: Record<number, UserDetail> = {
       {
         name: "Official Branding ITB",
         description: "Rebranding aset digital untuk penerimaan mahasiswa baru.",
+      },
+    ],
+    performance: [
+      {
+        month: "Aug",
+        year: 2024,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Summer Code Jam", team: "ByteForce", result: "Participant" },
+          { name: "UI/UX Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2024,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Hackathon Merdeka", team: "ByteForce", result: "Winner" },
+          { name: "Cloud Challenge", team: "SkyNet ID", result: "Finalist" },
+          {
+            name: "Data Viz Contest",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2024,
+        participations: 6,
+        wins: 3,
+        competitions: [
+          { name: "Gemastik XVI", team: "ByteForce", result: "Winner" },
+          { name: "Compfest XV", team: "CodeCrafters", result: "Winner" },
+          { name: "IoT Smart Campus", team: "SensorLab", result: "Winner" },
+          {
+            name: "Mobile App Challenge",
+            team: "AppStorm",
+            result: "Runner-Up",
+          },
+          { name: "Web Dev Marathon", team: "ByteForce", result: "Finalist" },
+          { name: "Design Sprint", team: "PixelCraft", result: "Participant" },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2024,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "DevFest Jakarta", team: "ByteForce", result: "Winner" },
+          { name: "Startup Weekend", team: "LaunchPad", result: "Winner" },
+          { name: "Code for Good", team: "ImpactDev", result: "Finalist" },
+          {
+            name: "AI Innovation Cup",
+            team: "NeuralNet",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2024,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Year-End Hackfest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Code Jam", team: "ByteForce", result: "Winner" },
+          { name: "Figma Config Jam", team: "PixelCraft", result: "Runner-Up" },
+          { name: "Backend Blitz", team: "ServerSquad", result: "Participant" },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Valentine Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "UX Research Sprint",
+            team: "PixelCraft",
+            result: "Finalist",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2025,
+        participations: 5,
+        wins: 2,
+        competitions: [
+          {
+            name: "Google Solution Challenge",
+            team: "ByteForce",
+            result: "Winner",
+          },
+          {
+            name: "Hackathon Nasional",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "AWS Build Day", team: "SkyNet ID", result: "Finalist" },
+          { name: "Flutter Fest", team: "AppStorm", result: "Runner-Up" },
+          {
+            name: "Data Science Bowl",
+            team: "DataMinds",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Apr",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "Enterprise Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "Product Design Sprint",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          {
+            name: "Blockchain Challenge",
+            team: "ChainGang",
+            result: "Finalist",
+          },
+          {
+            name: "React Challenge",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "May",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "EdTech Hackathon", team: "ByteForce", result: "Winner" },
+          { name: "Green Tech Sprint", team: "EcoCode", result: "Runner-Up" },
+          { name: "Mobile UX Jam", team: "AppStorm", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jun",
+        year: 2025,
+        participations: 2,
+        wins: 0,
+        competitions: [
+          { name: "Mid-Year Code Fest", team: "ByteForce", result: "Finalist" },
+          {
+            name: "Design Systems Jam",
+            team: "PixelCraft",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Jul",
+        year: 2025,
+        participations: 1,
+        wins: 0,
+        competitions: [
+          {
+            name: "Summer Break Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Aug",
+        year: 2025,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "Independence Hack", team: "ByteForce", result: "Winner" },
+          {
+            name: "A11y Design Challenge",
+            team: "PixelCraft",
+            result: "Runner-Up",
+          },
+          {
+            name: "Cloud Native Jam",
+            team: "SkyNet ID",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Sep",
+        year: 2025,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          { name: "Compfest XVI", team: "ByteForce", result: "Winner" },
+          {
+            name: "Hackathon Merdeka II",
+            team: "CodeCrafters",
+            result: "Winner",
+          },
+          { name: "iOS Dev Challenge", team: "AppStorm", result: "Winner" },
+          { name: "Data Hackday", team: "DataMinds", result: "Finalist" },
+          { name: "Cyber Security CTF", team: "SecOps", result: "Participant" },
+        ],
+      },
+      {
+        month: "Oct",
+        year: 2025,
+        participations: 7,
+        wins: 4,
+        competitions: [
+          { name: "Gemastik XVII", team: "ByteForce", result: "Winner" },
+          { name: "Google Dev Fest", team: "CodeCrafters", result: "Winner" },
+          { name: "UI/UX Design Sprint", team: "PixelCraft", result: "Winner" },
+          { name: "Smart City Hack", team: "UrbanDev", result: "Winner" },
+          { name: "ML Challenge", team: "NeuralNet", result: "Runner-Up" },
+          { name: "Startup Pitch Day", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "Open Source Fest",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Nov",
+        year: 2025,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          { name: "BizIT Challenge", team: "ByteForce", result: "Winner" },
+          { name: "Creative Code Fest", team: "PixelCraft", result: "Winner" },
+          { name: "Tech in Asia Hack", team: "LaunchPad", result: "Finalist" },
+          {
+            name: "DevOps Challenge",
+            team: "ServerSquad",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Dec",
+        year: 2025,
+        participations: 2,
+        wins: 1,
+        competitions: [
+          { name: "Year-End Showcase", team: "ByteForce", result: "Winner" },
+          { name: "Holiday Hack", team: "CodeCrafters", result: "Participant" },
+        ],
+      },
+      {
+        month: "Jan",
+        year: 2026,
+        participations: 3,
+        wins: 1,
+        competitions: [
+          { name: "New Year Innovation", team: "ByteForce", result: "Winner" },
+          { name: "AI Ethics Hack", team: "NeuralNet", result: "Runner-Up" },
+          {
+            name: "Frontend Blitz",
+            team: "CodeCrafters",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Feb",
+        year: 2026,
+        participations: 4,
+        wins: 2,
+        competitions: [
+          {
+            name: "Valentine Design Jam",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Cloud Innovation Cup", team: "SkyNet ID", result: "Winner" },
+          {
+            name: "React Challenge II",
+            team: "CodeCrafters",
+            result: "Finalist",
+          },
+          {
+            name: "Agile Sprint Hack",
+            team: "ByteForce",
+            result: "Participant",
+          },
+        ],
+      },
+      {
+        month: "Mar",
+        year: 2026,
+        participations: 5,
+        wins: 3,
+        competitions: [
+          {
+            name: "Hackathon UI/UX 2026",
+            team: "PixelCraft",
+            result: "Winner",
+          },
+          { name: "Code for Impact", team: "ImpactDev", result: "Winner" },
+          { name: "Flutter Fest II", team: "AppStorm", result: "Winner" },
+          { name: "Blockchain Summit", team: "ChainGang", result: "Runner-Up" },
+          { name: "Campus Dev Day", team: "ByteForce", result: "Finalist" },
+        ],
       },
     ],
     competitionHistory: {
