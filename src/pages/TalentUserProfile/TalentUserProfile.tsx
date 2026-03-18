@@ -18,6 +18,7 @@ import TeamsSection from "@/components/talents-profile/TeamsSection";
 import TrophyRoom from "@/components/talents-profile/TrophyRoom";
 import InviteToTeamModal from "@/components/InviteToTeamModal";
 import ContactModal from "@/components/global-components/ContactModal";
+import PerformanceHistory from "@/components/talents-profile/PerformanceHistory";
 
 export default function UserProfile() {
   const params = useParams();
@@ -31,9 +32,14 @@ export default function UserProfile() {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-foreground">User not found</h1>
-        <p className="text-muted-foreground mt-2">This profile doesn't exist.</p>
+        <p className="text-muted-foreground mt-2">
+          This profile doesn't exist.
+        </p>
         <Button variant="outline" className="mt-6" asChild>
-          <Link href="/talent"><ArrowLeft className="h-4 w-4 mr-2" />Back to Discover</Link>
+          <Link href="/talent">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Discover
+          </Link>
         </Button>
       </div>
     );
@@ -43,15 +49,23 @@ export default function UserProfile() {
     <div className="w-full min-h-screen bg-[#F9FBFB]">
       <div className="container mx-auto max-w-4xl px-4 py-8">
         <div className="animate-fade-in">
-          <Link href="/talent" className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mb-6">
+          <Link
+            href="/talent"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mb-6"
+          >
             <ArrowLeft className="h-4 w-4" /> Back to Discover Talent
           </Link>
 
-          <ProfileHeader user={user} onContact={() => setContactOpen(true)} onInvite={() => setInviteOpen(true)} />
+          <ProfileHeader
+            user={user}
+            onContact={() => setContactOpen(true)}
+            onInvite={() => setInviteOpen(true)}
+          />
 
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             <div className="md:col-span-2 space-y-6">
               <AboutSection user={user} />
+              <PerformanceHistory performance={user.performance} />
               <SkillsSection skills={user.skills} />
               <TeamsSection teams={user.teams} />
               <TrophyRoom history={user.competitionHistory} />
@@ -62,8 +76,16 @@ export default function UserProfile() {
           </div>
         </div>
 
-        <InviteToTeamModal open={inviteOpen} onOpenChange={setInviteOpen} targetUser={user} />
-        <ContactModal open={contactOpen} onOpenChange={setContactOpen} user={user} />
+        <InviteToTeamModal
+          open={inviteOpen}
+          onOpenChange={setInviteOpen}
+          targetUser={user}
+        />
+        <ContactModal
+          open={contactOpen}
+          onOpenChange={setContactOpen}
+          user={user}
+        />
       </div>
     </div>
   );
