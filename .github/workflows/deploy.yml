@@ -1,4 +1,4 @@
-name: Deploy Next.js (no standalone)
+name: Deploy Next.js to FTP
 
 on:
   push:
@@ -10,25 +10,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
-      - run: npm install
-      - run: npm run build
+      # 🔥 Install deps
+      - name: Install deps
+        run: npm install
 
-      - name: Upload via FTP
+      # 🔥 Build
+      - name: Build
+        run: npm run build
+
+      # 🔥 Install production deps only
+      - name: Install production deps only
+        run: |
+          rm -rf node_modules
+          npm install --production
+
+      # 🔥 Prepare folder + zip
+      - name: Zip project
+        run: |
+          mkdir deploy
+          zip -r deploy/deploy.zip . \
+            -x "deploy/*" \
+            -x "*.git*" \
+            -x "node_modules/.cache/*" \
+            -x ".next/cache/*"
+
+      # 🔥 Upload
+      - name: Upload ZIP via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./
+          local-dir: deploy/
           server-dir: /
           dangerous-clean-slate: false
-          exclude: |
-            **/.git*
-            **/node_modules/**
-            **/.next/cache/**
