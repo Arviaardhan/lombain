@@ -1,10 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react"; // Tambah useEffect
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Home, Search, PlusCircle, User, Menu, X, Trophy, Users,
+  Home,
+  Search,
+  PlusCircle,
+  User,
+  Menu,
+  X,
+  Trophy,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -29,13 +36,11 @@ export default function Navbar() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
-  }, [pathname]); 
+  }, [pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-
     Cookies.remove("token");
-
     setIsLoggedIn(false);
     router.push("/");
   };
@@ -45,6 +50,9 @@ export default function Navbar() {
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-emerald shadow-lg shadow-primary/20">
+              <Trophy className="h-5 w-5 text-white" />
+            </div>
             <span className="text-lg font-bold tracking-tight">
               <AppName span />
             </span>
@@ -52,22 +60,27 @@ export default function Navbar() {
 
           {/* Nav Links - Hanya muncul jika Login */}
           <nav className="hidden items-center gap-1 md:flex">
-            {isLoggedIn && navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200",
-                    isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                  )}
-                >
-                  <item.icon className={cn("h-4 w-4", isActive && "animate-pulse")} />
-                  {item.label}
-                </Link>
-              );
-            })}
+            {isLoggedIn &&
+              navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200",
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    )}
+                  >
+                    <item.icon
+                      className={cn("h-4 w-4", isActive && "animate-pulse")}
+                    />
+                    {item.label}
+                  </Link>
+                );
+              })}
           </nav>
 
           {/* Right Actions */}
@@ -75,14 +88,21 @@ export default function Navbar() {
             {isLoggedIn ? (
               <>
                 <NotificationDropdown />
-                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                >
                   Log Out
                 </Button>
               </>
             ) : (
               <>
                 <Link href="/auth/login">
-                  <Button variant="ghost" size="sm">Log In</Button>
+                  <Button variant="ghost" size="sm">
+                    Log In
+                  </Button>
                 </Link>
                 <Link href="/auth/signup">
                   <Button size="sm">Sign Up</Button>
@@ -94,8 +114,15 @@ export default function Navbar() {
           {/* Mobile Toggle */}
           <div className="flex items-center gap-2 md:hidden">
             {isLoggedIn && <NotificationDropdown />}
-            <button className="p-2 rounded-lg hover:bg-muted" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            <button
+              className="p-2 rounded-lg hover:bg-muted"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </button>
           </div>
         </div>
@@ -108,7 +135,14 @@ export default function Navbar() {
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
-                <Link key={item.href} href={item.href} className={cn("flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium", isActive ? "text-primary" : "text-muted-foreground")}>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium",
+                    isActive ? "text-primary" : "text-muted-foreground",
+                  )}
+                >
                   <item.icon className="h-5 w-5" />
                   {item.label}
                 </Link>
