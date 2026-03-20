@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, Users, Trophy, Clock } from "lucide-react";
 import confetti from "canvas-confetti";
@@ -18,11 +18,15 @@ import NotificationItem from "@/components/dashboard/NotificationItem";
 import RemoveMemberDialog from "@/components/dashboard/RemoveMemberDialog";
 import MemberProfileDrawer from "@/components/MemberProfileDrawer";
 
+import { ENDPOINTS } from "@/lib/api-constant";
+import Cookies from "js-cookie";
+
 export default function Dashboard() {
   const { toast } = useToast();
 
-  const [requests, setRequests] = useState<JoinRequest[]>(initialRequests);
-  const [teams, setTeams] = useState<Team[]>(initialTeams);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [requests, setRequests] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
@@ -47,25 +51,56 @@ export default function Dashboard() {
     });
   };
 
-  const handleApprove = (req: JoinRequest) => {
-    setRequests((prev) => prev.filter((r) => r.id !== req.id));
-    setTeams((prev) =>
-      prev.map((t) =>
-        t.name === req.team && t.filled < t.total
-          ? {
-            ...t,
-            filled: t.filled + 1,
-            status: t.filled + 1 >= t.total ? "Full" : "Recruiting",
-            members: [...t.members, { name: req.name, initials: req.initials, role: "Member", isLeader: false }],
-          }
-          : t
-      )
-    );
-    fireConfetti();
-    toast({
-      title: "🎉 Member Successfully Joined!",
-      description: `${req.name} has been added to ${req.team}.`,
-    });
+  const handleApprove = async (req: any) => {
+    try {
+      const token = Cookies.get("token");
+
+      // Pastikan req.request_id dan req.role_id ada di objek req
+      const response = await fetch(`${ENDPOINTS.ASSIGN_ROLE}`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          request_id: req.id, // Sesuai mapping kamu: id di front-end adalah request_id di API
+          role_id: req.role_id, // Pastikan role_id ini masuk saat mapping useEffect tadi
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // 1. Hapus dari daftar pending requests
+        setRequests((prev) => prev.filter((r) => r.id !== req.id));
+
+        // 2. Efek Selebrasi!
+        fireConfetti();
+
+        // 3. Notifikasi Berhasil
+        toast({
+          title: "🎉 Berhasil!",
+          description: `${req.name} sekarang resmi menjadi bagian dari tim ${req.team}.`,
+        });
+
+        // 4. (Opsional) Refresh data teams agar jumlah member bertambah
+        // fetchDashboardData(); 
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Gagal Approve",
+          description: result.message,
+        });
+      }
+    } catch (error) {
+      console.error("Error approving member:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Terjadi kesalahan koneksi.",
+      });
+    }
   };
 
   const handleDecline = (id: number) => {
@@ -90,6 +125,61 @@ export default function Dashboard() {
     toast({ title: "Member Removed", description: `${removeMember.memberName} has been removed.` });
     setRemoveMember(null);
   };
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setIsLoading(true);
+      try {
+        const token = Cookies.get("token");
+        const res = await fetch(ENDPOINTS.USER_DASHBOARD, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const result = await res.json();
+        console.log("Data dari API:", result.data.incoming_requests);
+
+        if (result.success) {
+          // 1. Set Managed Teams
+          const managedTeams = result.data.managed_teams || [];
+          const formattedTeams = managedTeams.map((t: any) => ({
+            ...t,
+            total: t.max_members,
+            filled: t.member_count,
+            members: t.members || []
+          }));
+          setTeams(formattedTeams);
+
+          const incomingRequests = result.data.incoming_requests || [];
+
+          const formattedRequests = incomingRequests.map((req: any) => ({
+            id: req.id, 
+            team_id: req.team_id,
+            user_id: req.user_id,
+            role_id: req.role_id,
+            name: req.user_name,
+            initials: req.user_name ? req.user_name.substring(0, 2).toUpperCase() : "??",
+            team: req.team_name,
+            role: req.role_name || "Member",
+            message: req.note || "No message provided",
+            skills: [],
+            time: "New",
+            status: req.status
+          }));
+
+          setRequests(formattedRequests);
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   return (
     <div className="w-full min-h-screen bg-accent/10">
@@ -171,7 +261,7 @@ export default function Dashboard() {
             <div className="grid gap-4">
               {teams.map((team) => (
                 <TeamAccordion
-                  key={team.name}
+                  key={team.id}
                   team={team}
                   isExpanded={expandedTeam === team.name}
                   onToggle={() => setExpandedTeam(expandedTeam === team.name ? null : team.name)}

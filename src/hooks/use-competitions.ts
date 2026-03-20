@@ -1,60 +1,89 @@
-// src/hooks/use-competitions.ts
-import { useState, useEffect } from "react";
-import { mockPosts } from "@/data/competitions";
-import { Competition } from "@/types/competition";
+// hooks/use-competitions.ts
+import { useState, useEffect, useMemo } from "react";
+import { ENDPOINTS } from "@/lib/api-constant";
+import Cookies from "js-cookie";
 
 export function useCompetitions() {
+    // Pastikan inisialisasi awal adalah array kosong [], bukan null/undefined
+    const [allTeams, setAllTeams] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-    const [visibleCount, setVisibleCount] = useState(6);
-    const [isLoading, setIsLoading] = useState(true);
+    const [visibleCount, setVisibleCount] = useState(4);
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 1500);
-        return () => clearTimeout(timer);
+        const fetchTeams = async () => {
+            setIsLoading(true);
+            try {
+                const token = Cookies.get("token") || localStorage.getItem("token");
+                const res = await fetch(ENDPOINTS.EXPLORE_TEAMS, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/json",
+                    },
+                });
+                const result = await res.json();
+
+                // PERBAIKAN DI SINI: Laravel kirim 'teams', bukan 'data'
+                if (result.success && Array.isArray(result.teams)) {
+                    setAllTeams(result.teams);
+                } else {
+                    setAllTeams([]);
+                }
+            } catch (error) {
+                console.error("Failed to fetch teams:", error);
+                setAllTeams([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchTeams();
     }, []);
 
-    const toggleCategory = (cat: string) => {
-        setSelectedCategories((prev) =>
-            prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
-        );
-    };
+    const filtered = useMemo(() => {
+        if (!Array.isArray(allTeams)) return [];
 
-    const toggleSkill = (skill: string) => {
-        setSelectedSkills((prev) =>
-            prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
-        );
-    };
+        return allTeams.filter((team) => {
+            if (!team) return false;
 
-    const clearFilters = () => {
-        setSelectedCategories([]);
-        setSelectedSkills([]);
-    };
+            // Sesuaikan mapping filter dengan properti dari Laravel
+            const matchesSearch =
+                (team.name || "").toLowerCase().includes(search.toLowerCase()) ||
+                (team.competition_name || "").toLowerCase().includes(search.toLowerCase());
 
-    // Cari bagian ini di use-competitions.ts kamu
-    const filtered = mockPosts.filter((post: Competition) => {
-        const matchSearch = post.title.toLowerCase().includes(search.toLowerCase()) || post.desc.toLowerCase().includes(search.toLowerCase());
+            const matchesCategory =
+                selectedCategories.length === 0 ||
+                selectedCategories.includes(team.category); // Propertinya 'category'
 
-        const matchCategory = selectedCategories.length === 0 || selectedCategories.includes(post.category);
-
-        const matchSkills = selectedSkills.length === 0 || post.skills.some((s) => selectedSkills.includes(s));
-
-        return matchSearch && matchCategory && matchSkills;
-    });
+            return matchesSearch && matchesCategory;
+        });
+    }, [allTeams, search, selectedCategories]);
 
     return {
         search,
         setSearch,
         selectedCategories,
         selectedSkills,
-        toggleCategory,
-        toggleSkill,
-        clearFilters,
-        filtered,
+        toggleCategory: (cat: string) => {
+            setSelectedCategories(prev =>
+                prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
+            );
+        },
+        toggleSkill: (skill: string) => {
+            setSelectedSkills(prev =>
+                prev.includes(skill) ? prev.filter(s => s !== skill) : [...prev, skill]
+            );
+        },
+        clearFilters: () => {
+            setSelectedCategories([]);
+            setSelectedSkills([]);
+            setSearch("");
+        },
+        filtered: filtered || [], // Selalu pastikan return array
         isLoading,
         visibleCount,
         setVisibleCount,
-        activeFiltersCount: selectedCategories.length + selectedSkills.length,
+        activeFiltersCount: (selectedCategories?.length || 0) + (selectedSkills?.length || 0),
     };
 }

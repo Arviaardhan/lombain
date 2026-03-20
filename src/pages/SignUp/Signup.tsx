@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Trophy, Eye, EyeOff } from "lucide-react"; // Tambah ikon mata untuk password
+import { useRouter } from "next/navigation";
+import { Trophy, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -14,24 +15,49 @@ import {
 } from "@/components/ui/select";
 
 import Field from "@/components/create-recruitment/Field";
-import SkillSection from "@/components/auth/SkillSection";
-import { institutions, masterCategories } from "@/data/signup-data";
+import { institutions } from "@/data/signup-data";
 import AppName from "@/components/AppName";
+import { ENDPOINTS } from "@/lib/api-constant";
+
+interface SkillCat {
+  id: number;
+  name: string;
+}
 
 export default function SignupPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [apiCategories, setApiCategories] = useState<SkillCat[]>([]);
+
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
     institution: "",
-    major: "", // Tambahan Major
-    password: "", // Tambahan Password
-    skillCategory: "",
+    major: "",
+    password: "",
+    password_confirmation: "", 
+    skill_category_id: "",     
   });
-  const [skills, setSkills] = useState<string[]>([]);
 
-  // Handler untuk sinkronisasi state
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(ENDPOINTS.SKILL_CATEGORIES);
+        const result = await res.json();
+        if (result.success) {
+          setApiCategories(result.data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -41,10 +67,54 @@ export default function SignupPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    if (formData.password !== formData.password_confirmation) {
+      setError("Password dan Konfirmasi Password tidak cocok!");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(ENDPOINTS.REGISTER, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          skill_category_id: Number(formData.skill_category_id)
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Registrasi gagal");
+      }
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        router.push("/explore"); 
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-accent/10 flex items-center justify-center p-4 py-12">
       <div className="w-full max-w-lg">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#5A8D39] shadow-lg mb-4">
             <Trophy className="h-8 w-8 text-white" />
@@ -52,151 +122,70 @@ export default function SignupPage() {
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">
             Join <AppName span />
           </h1>
-          <p className="text-slate-700 font-medium opacity-80 mt-1">
-            Lengkapi profil untuk temukan tim impianmu
-          </p>
         </div>
 
-        {/* Card Form */}
         <div className="rounded-[2.5rem] bg-white p-8 md:p-10 shadow-2xl shadow-black/5">
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-            {/* Row: Name */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Field label="First Name" value={formData.firstName} required>
-                <Input
-                  id="firstName"
-                  placeholder="Andi"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="rounded-xl h-11 border-slate-200 focus-visible:ring-[#5A8D39]"
-                />
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm rounded-xl border border-red-100">
+              {error}
+            </div>
+          )}
+
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="First Name" value={formData.first_name} required>
+                <Input id="first_name" placeholder="Satriya" value={formData.first_name} onChange={handleChange} required className="rounded-xl h-11" />
               </Field>
-              <Field label="Last Name" value={formData.lastName} required>
-                <Input
-                  id="lastName"
-                  placeholder="Pratama"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="rounded-xl h-11 border-slate-200 focus-visible:ring-[#5A8D39]"
-                />
+              <Field label="Last Name" value={formData.last_name} required>
+                <Input id="last_name" placeholder="Mamad" value={formData.last_name} onChange={handleChange} required className="rounded-xl h-11" />
               </Field>
             </div>
 
-            {/* Email */}
             <Field label="Email Address" value={formData.email} required>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@campus.ac.id"
-                value={formData.email}
-                onChange={handleChange}
-                className="rounded-xl h-11 border-slate-200 focus-visible:ring-[#5A8D39]"
-              />
+              <Input id="email" type="email" placeholder="satriya@gmail.com" value={formData.email} onChange={handleChange} required className="rounded-xl h-11" />
             </Field>
 
-            {/* Institution */}
             <Field label="Institution" value={formData.institution} required>
-              <Select
-                onValueChange={(v) => handleSelectChange("institution", v)}
-              >
-                <SelectTrigger className="rounded-xl h-11 cursor-pointer border-slate-200 text-slate-900">
-                  <SelectValue placeholder="Pilih Kampus" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
+              <Select onValueChange={(v) => handleSelectChange("institution", v)}>
+                <SelectTrigger className="rounded-xl h-11"><SelectValue placeholder="Pilih Kampus" /></SelectTrigger>
+                <SelectContent>
                   {institutions.map((inst) => (
-                    <SelectItem
-                      key={inst}
-                      value={inst}
-                      className="cursor-pointer"
-                    >
-                      {inst}
-                    </SelectItem>
+                    <SelectItem key={inst} value={inst}>{inst}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </Field>
 
-            {/* Major / Department */}
-            <Field label="Major / Department" value={formData.major} required>
-              <Input
-                id="major"
-                placeholder="Contoh: Teknik Informatika"
-                value={formData.major}
-                onChange={handleChange}
-                className="rounded-xl h-11 border-slate-200 focus-visible:ring-[#5A8D39]"
-              />
+            <Field label="Major" value={formData.major} required>
+              <Input id="major" placeholder="Informatika" value={formData.major} onChange={handleChange} required className="rounded-xl h-11" />
             </Field>
 
-            {/* Skill Category */}
-            <Field
-              label="Skill Category"
-              value={formData.skillCategory}
-              required
-            >
-              <Select
-                onValueChange={(v) => handleSelectChange("skillCategory", v)}
-              >
-                <SelectTrigger className="rounded-xl h-11 cursor-pointer border-slate-200">
-                  <SelectValue placeholder="Pilih Kategori Utama" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  {Object.keys(masterCategories).map((cat) => (
-                    <SelectItem
-                      key={cat}
-                      value={cat}
-                      className="cursor-pointer"
-                    >
-                      {cat}
-                    </SelectItem>
+            {/* Skill Category dari API */}
+            <Field label="Skill Category" value={formData.skill_category_id} required>
+              <Select onValueChange={(v) => handleSelectChange("skill_category_id", v)}>
+                <SelectTrigger className="rounded-xl h-11"><SelectValue placeholder="Pilih Kategori" /></SelectTrigger>
+                <SelectContent>
+                  {apiCategories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id.toString()}>{cat.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </Field>
 
-            {/* Skill Tags Section */}
-            {formData.skillCategory && (
-              <SkillSection
-                category={formData.skillCategory}
-                skills={skills}
-                setSkills={setSkills}
-              />
-            )}
+            {/* Password Section */}
+            <div className="grid grid-cols-1 gap-4">
+              <Field label="Password" value={formData.password} required>
+                <Input id="password" type="password" placeholder="••••••" value={formData.password} onChange={handleChange} required className="rounded-xl h-11" />
+              </Field>
+              <Field label="Confirm Password" value={formData.password_confirmation} required>
+                <Input id="password_confirmation" type="password" placeholder="••••••" value={formData.password_confirmation} onChange={handleChange} required className="rounded-xl h-11" />
+              </Field>
+            </div>
 
-            {/* Password */}
-            <Field label="Password" value={formData.password} required>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="rounded-xl h-11 border-slate-200 pr-10 focus-visible:ring-[#5A8D39]"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#5A8D39] cursor-pointer"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </Field>
-
-            <Button className="w-full h-12 rounded-2xl bg-[#5A8D39] hover:bg-[#4a752f] text-white font-bold text-lg shadow-lg shadow-green-100 cursor-pointer transition-all active:scale-[0.98]">
-              Create Account
+            <Button type="submit" disabled={isLoading} className="w-full h-12 rounded-2xl bg-[#5A8D39] hover:bg-[#4a752f] text-white font-bold transition-all active:scale-[0.98]">
+              {isLoading ? <Loader2 className="animate-spin" /> : "Create Account"}
             </Button>
           </form>
-
-          <p className="mt-8 text-center text-sm font-medium text-slate-500">
-            Sudah punya akun?{" "}
-            <Link
-              href="/auth/login"
-              className="text-[#5A8D39] font-bold hover:underline"
-            >
-              Sign In
-            </Link>
-          </p>
         </div>
       </div>
     </div>

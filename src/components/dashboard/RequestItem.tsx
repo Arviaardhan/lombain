@@ -2,6 +2,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { Eye } from "lucide-react";
 
 export default function RequestItem({ req, onApprove, onDecline, onViewProfile }: any) {
   return (
@@ -21,17 +23,37 @@ export default function RequestItem({ req, onApprove, onDecline, onViewProfile }
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
-              <button onClick={() => onViewProfile(req)} className="font-semibold hover:text-primary hover:underline">
+              <button
+                onClick={() => onViewProfile(req)}
+                className="font-semibold hover:text-primary hover:underline text-left"
+              >
                 {req.name}
               </button>
               <span className="text-xs text-muted-foreground">· {req.time}</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Wants to join <span className="font-medium text-foreground">{req.team}</span> as {req.role}
+            <p className="text-sm font-medium text-muted-foreground flex flex-wrap items-center gap-y-2 mt-2">
+              Applied for
+              <span className="font-semibold text-white bg-[#5A8D39] px-2.5 py-0.5 rounded-full text-[11px] mx-1.5 shadow-sm">
+                {req.role}
+              </span>
+              role in
+              <span className="font-semibold text-white bg-[#5A8D39] px-2.5 py-0.5 rounded-full text-[11px] mx-1.5 shadow-sm">
+                {req.team}
+              </span>
             </p>
-            <p className="mt-2 text-sm text-muted-foreground italic">"{req.message}"</p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {req.skills.map((skill: string) => (
+
+            {/* INI AKAN MENAMPILKAN NOTE DARI AHMAD */}
+            {req.message && req.message !== "No message provided" && (
+              <div className="mt-3 relative">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#5A8D39]/30 rounded-full"></div>
+                <p className="pl-4 text-sm text-slate-600 italic leading-relaxed">
+                  "{req.message}"
+                </p>
+              </div>
+            )}
+
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {(req.skills || []).map((skill: string) => (
                 <span key={skill} className="rounded-md bg-accent px-2 py-0.5 text-xs font-medium">
                   {skill}
                 </span>
@@ -39,13 +61,26 @@ export default function RequestItem({ req, onApprove, onDecline, onViewProfile }
             </div>
           </div>
         </div>
+
         <div className="flex gap-2 shrink-0">
-          <Button size="sm" variant="outline" className="text-destructive rounded-xl" onClick={() => onDecline(req.id)}>
-            <X className="h-4 w-4" /> Decline
+          <Button
+            size="sm"
+            variant="outline"
+            className="text-destructive rounded-xl hover:bg-destructive/5"
+            onClick={() => onDecline(req.id)}
+          >
+            <X className="h-4 w-4 mr-1" /> Decline
           </Button>
-          <Button size="sm" className="rounded-xl bg-[#5A8D39] hover:bg-[#4a752f]" onClick={() => onApprove(req)}>
-            <Check className="h-4 w-4" /> Approve
-          </Button>
+
+          {/* GANTI TOMBOL APPROVE JADI REVIEW */}
+          <Link href={`/create/manage/${req.team_id}`}>
+            <Button
+              size="sm"
+              className="rounded-xl bg-primary hover:bg-primary/90 text-white"
+            >
+              <Eye className="h-4 w-4 mr-1" /> Review in Management
+            </Button>
+          </Link>
         </div>
       </div>
     </motion.div>
