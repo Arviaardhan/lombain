@@ -6,6 +6,7 @@ export interface Member {
 }
 
 export interface Team {
+  id: any;
   name: string;
   filled: number;
   total: number;

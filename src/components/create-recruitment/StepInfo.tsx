@@ -14,6 +14,7 @@ import { categories } from "@/data/recruitment";
 export default function Step0Info({
   category, setCategory,
   title, setTitle,
+  headline, setHeadline,
   link, setLink,
   deadline, setDeadline,
   whatsappLink, setWhatsappLink,
@@ -29,7 +30,6 @@ export default function Step0Info({
           value={category}
           onValueChange={(v) => {
             setCategory(v);
-            setTitle("");
           }}
         >
           <SelectTrigger className={`rounded-xl h-11 ${fieldClass("category")}`}>
@@ -79,6 +79,22 @@ export default function Step0Info({
         </div>
       </Field>
 
+      <Field
+        label="Team Headline"
+        value={headline}
+        required
+        error={errors.headline}
+        hint="Kalimat singkat yang muncul di kartu (Max 150 karakter)"
+      >
+        <Input
+          placeholder='e.g., "Need a passionate UI Designer to build an innovative travel app"'
+          value={headline}
+          onChange={(e) => setHeadline(e.target.value)}
+          maxLength={150}
+          className={`rounded-xl h-11 ${fieldClass("headline")}`}
+        />
+      </Field>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field label="Competition Link" error={errors.link}>
           <Input
@@ -88,9 +104,10 @@ export default function Step0Info({
             className={`rounded-xl h-11 ${fieldClass("link")}`}
           />
         </Field>
-        <Field label="Registration Deadline">
+        <Field label="Recruitment Closes On">
           <Input
             type="date"
+            min={new Date().toISOString().split("T")[0]}
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
             className="rounded-xl h-11 cursor-pointer"

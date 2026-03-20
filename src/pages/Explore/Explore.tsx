@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 import FilterSidebar from "@/components/explore/FilterSidebar";
 import CompetitionCard from "@/components/explore/CompetitionCard";
@@ -106,15 +107,17 @@ export default function ExplorePage() {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {isLoading ? (
                 Array.from({ length: 4 }).map((_, i) => <CompetitionSkeleton key={i} />)
-              ) : filtered.length === 0 ? (
-                <div className="col-span-full py-20 text-center bg-white rounded-3xl border-2 border-dashed">
-                   <Search className="mx-auto h-12 w-12 text-slate-300" />
-                   <p className="mt-4 text-xl font-bold">No teams found</p>
-                </div>
-              ) : (
+              ) : Array.isArray(filtered) && filtered.length > 0 ? (
                 filtered.slice(0, visibleCount).map((post, i) => (
-                  <CompetitionCard key={post.id} post={post} index={i} />
+                  // Pastikan post.id ada, jika tidak pakai index i
+                  <CompetitionCard key={post?.id || i} post={post} index={i} />
                 ))
+              ) : (
+                <div className="col-span-full py-20 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200">
+                  <Search className="mx-auto h-12 w-12 text-slate-300" />
+                  <p className="mt-4 text-xl font-bold text-slate-900">No teams found</p>
+                  <p className="text-slate-500">Try adjusting your filters or search keywords</p>
+                </div>
               )}
             </div>
 

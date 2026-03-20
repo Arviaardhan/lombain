@@ -17,6 +17,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log("PORT DARI SERVER:", process.env.NEXT_PUBLIC_REVERB_PORT);
+  
   return (
     <html lang="en" className={jakarta.variable}>
       <body className="font-sans antialiased">
