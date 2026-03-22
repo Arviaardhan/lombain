@@ -20,8 +20,8 @@ export default function TeamManagementPage() {
     const router = useRouter();
 
     const {
-        isLoading, teamData, roles, requests,
-        handleAccept, handleReject, handleSaveRole, handleRemoveMember
+        isLoading, teamData, roles, requests, recommendedRoleId,
+        handleAccept, handleReject, handleSaveRole, handleRemoveMember, handleDeleteRole, autoAssignRole, calculateRecommendation, resetRecommendation, handleAddRoleApi
 
     } = useTeamManagement(id);
 
@@ -32,6 +32,7 @@ export default function TeamManagementPage() {
     const [editRole, setEditRole] = useState<any>(null);
     const [selectedMember, setSelectedMember] = useState<any>(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [isAddMode, setIsAddMode] = useState(false);
 
     // UI Logic (Filter)
     const allSkills = Array.from(new Set(requests.flatMap((r) => r.user?.skills?.map((s: any) => s.name) || [])));
@@ -40,6 +41,23 @@ export default function TeamManagementPage() {
         const matchesSkill = !skillFilter || r.user?.skills?.some((s: any) => s.name === skillFilter);
         return matchesSearch && matchesSkill && r.status === "pending";
     });
+
+    const onDragRequestStart = (reqId: string) => {
+        setDraggedRequest(reqId);
+        calculateRecommendation(reqId); // <--- HITUNG REKOMENDASI DI SINI
+    };
+
+    // FUNGSI BARU: Handler saat Drag Request Selesai (Drop atau Batal)
+    const onDragRequestEnd = () => {
+        setDragOverRole(null);
+        setDraggedRequest(null);
+        resetRecommendation(); // <--- RESET REKOMENDASI DI SINI
+    };
+
+    const triggerAddRoleModal = () => {
+        setEditRole(null); // Pastikan data role kosong
+        setIsAddMode(true);
+    };
 
     if (isLoading) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin" /></div>;
 
@@ -70,37 +88,67 @@ export default function TeamManagementPage() {
                 <div className="lg:col-span-3 space-y-6">
                     <div className="flex items-center justify-between">
                         <p className="text-[10px] font-black tracking-widest text-muted-foreground uppercase">Role Management</p>
-                        <Button size="sm" variant="outline" className="gap-1.5"><Plus className="h-3.5 w-3.5" /> Add Role</Button>
+                        {/* HUBUNGKAN KE SINI */}
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="gap-1.5 hover:scale-105 transition-transform"
+                            onClick={triggerAddRoleModal}
+                        >
+                            <Plus className="h-3.5 w-3.5" /> Add Role
+                        </Button>
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <AnimatePresence mode="popLayout">
-                            {roles.map((role) => (
-                                <RoleCard
-                                    key={role.id}
-                                    role={role}
-                                    isDragOver={dragOverRole === String(role.id)}
-                                    // Menghilangkan error 'e' has any type
-                                    onDragOver={(e: React.DragEvent) => {
-                                        e.preventDefault();
-                                        setDragOverRole(String(role.id));
-                                    }}
-                                    onDragLeave={() => setDragOverRole(null)}
-                                    onDrop={() => {
-                                        if (draggedRequest) {
-                                            handleAccept(draggedRequest, role.id);
-                                        }
-                                        setDragOverRole(null);
-                                    }}
-                                    onEdit={() => setEditRole(role)}
-                                    onViewMember={(m: any) => { setSelectedMember(m); setDrawerOpen(true); }}
-                                    onDelete={() => { }}
-                                    // Menghilangkan error 'memberId' has any type
-                                    onRemoveMember={(memberId: string | number) => handleRemoveMember(id, memberId)}
-                                />
-                            ))}
-                        </AnimatePresence>
-                    </div>
+                    {/* State Empty (Jika belum ada role) */}
+                    {roles.length === 0 ? (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-12 text-center"
+                        >
+                            <Trophy className="mx-auto h-10 w-10 text-slate-300" />
+                            <p className="mt-4 text-sm font-bold text-slate-600">Belum ada role di tim ini</p>
+                            <p className="text-xs text-slate-400">Tambahkan role untuk mulai merekrut member.</p>
+                            <Button
+                                size="sm"
+                                className="mt-6 gap-1.5 bg-[#5A8D39] hover:bg-[#4a752f]"
+                                onClick={handleAddRoleApi}
+                            >
+                                <Plus className="h-3.5 w-3.5" /> Create First Role
+                            </Button>
+                        </motion.div>
+                    ) : (
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <AnimatePresence mode="popLayout">
+                                {roles.map((role) => (
+                                    <RoleCard
+                                        key={role.id}
+                                        role={role}
+                                        isDragOver={dragOverRole === String(role.id)}
+                                        isRecommended={recommendedRoleId === role.id}
+                                        onDragOver={(e: React.DragEvent) => {
+                                            e.preventDefault();
+                                            // Simpan sebagai string agar konsisten saat pengecekan isDragOver
+                                            setDragOverRole(String(role.id));
+                                        }}
+                                        onDragLeave={() => setDragOverRole(null)}
+                                        onDrop={() => {
+                                            if (draggedRequest) {
+                                                // Pastikan role.id yang dikirim benar
+                                                handleAccept(draggedRequest, role.id);
+                                            }
+                                            onDragRequestEnd();
+                                        }}
+                                        // Pastikan onEdit ada di sini!
+                                        onEdit={() => setEditRole(role)}
+                                        onDelete={() => handleDeleteRole(role.id)}
+                                        onRemoveMember={(memberId: string | number) => handleRemoveMember(id, memberId)}
+                                        onViewMember={(m: any) => { setSelectedMember(m); setDrawerOpen(true); }}
+                                    />
+                                ))}
+                            </AnimatePresence>
+                        </div>
+                    )}
                 </div>
 
                 <div className="lg:col-span-2 space-y-4">
@@ -117,6 +165,7 @@ export default function TeamManagementPage() {
                             {filteredRequests.map((req) => (
                                 <motion.div
                                     key={req.id}
+                                    onDragEnd={onDragRequestEnd}
                                     layout
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
@@ -135,9 +184,12 @@ export default function TeamManagementPage() {
                                             bio: req.note, // Pesan miring pelamar
                                             skills: req.user.skills || ["React", "Next.js", "TypeScript"] // Dummy skills jika API belum kirim
                                         }}
-                                        onAccept={() => handleAccept(req.id, req.role_id)}
+                                        onAccept={() => autoAssignRole(req.id)}
                                         onReject={() => handleReject(req.id)}
-                                        onDragStart={() => setDraggedRequest(req.id)}
+                                        // GUNAKAN FUNGSI HANDLER BARU
+                                        onDragStart={() => onDragRequestStart(req.id)}
+                                        onDragEnd={onDragRequestEnd}
+                                        isDragging={draggedRequest === req.id}
                                     />
                                 </motion.div>
                             ))}
@@ -146,14 +198,31 @@ export default function TeamManagementPage() {
                 </div>
             </div>
 
-            {editRole && (
+            {(isAddMode || editRole) && (
                 <EditRoleDialog
-                    open={!!editRole}
-                    onOpenChange={(open) => !open && setEditRole(null)}
+                    open={isAddMode || !!editRole}
+                    onOpenChange={(open: boolean) => {
+                        if (!open) {
+                            setIsAddMode(false);
+                            setEditRole(null);
+                        }
+                    }}
+                    // Jika sedang edit, kirim data role. Jika add, kirim null.
                     role={editRole}
-                    onSave={async (val) => {
-                        const success = await handleSaveRole(val);
-                        if (success) setEditRole(null);
+                    onSave={async (val: any) => {
+                        let success;
+                        if (val.id) {
+                            // Berarti EDIT karena punya ID
+                            success = await handleSaveRole(val);
+                        } else {
+                            // Berarti ADD karena ID kosong
+                            success = await handleAddRoleApi(val);
+                        }
+
+                        if (success) {
+                            setIsAddMode(false);
+                            setEditRole(null);
+                        }
                     }}
                 />
             )}

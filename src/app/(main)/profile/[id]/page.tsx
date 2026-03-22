@@ -1,9 +1,9 @@
-import TalentUserProfilePage from "@/pages/TalentUserProfile/TalentUserProfile";
+import EditProfilePage from "@/pages/EditProfile/EditProfile";
 
-export default function Explore() {
+export default function EditProfile() {
   return (
     <>
-      <TalentUserProfilePage />
+      <EditProfilePage />
     </>
   );
 }
