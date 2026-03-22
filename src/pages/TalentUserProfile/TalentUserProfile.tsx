@@ -2,12 +2,11 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-// Data
-import { mockUsers } from "@/data/users";
+import Cookies from "js-cookie";
+import { API_BASE_URL } from "@/lib/api-constant";
 
 // Widgets
 import ProfileHeader from "@/components/talents-profile/ProfileHeader";
@@ -22,23 +21,55 @@ import PerformanceHistory from "@/components/talents-profile/PerformanceHistory"
 
 export default function UserProfile() {
   const params = useParams();
-  if (!params) return null;
-
-  const user = mockUsers[Number(params.id)];
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchTalentDetail = async () => {
+      if (!params?.id) return;
+      
+      setIsLoading(true);
+      try {
+        const token = Cookies.get("token");
+        const res = await fetch(`${API_BASE_URL}/talents/${params.id}`, {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+          },
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          setUser(result.data);
+        }
+      } catch (error) {
+        console.error("Gagal memuat detail talent:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTalentDetail();
+  }, [params?.id]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-[#F9FBFB]">
+        <Loader2 className="h-8 w-8 animate-spin text-[#5A8D39]" />
+      </div>
+    );
+  }
 
   if (!user) {
     return (
       <div className="container mx-auto max-w-4xl px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-foreground">User not found</h1>
-        <p className="text-muted-foreground mt-2">
-          This profile doesn't exist.
-        </p>
+        <p className="text-muted-foreground mt-2">Profil ini tidak ditemukan atau sudah dihapus.</p>
         <Button variant="outline" className="mt-6" asChild>
           <Link href="/talent">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Discover
+            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Discover
           </Link>
         </Button>
       </div>
@@ -56,6 +87,7 @@ export default function UserProfile() {
             <ArrowLeft className="h-4 w-4" /> Back to Discover Talent
           </Link>
 
+          {/* Pastikan widget di bawah ini sudah menerima props dari API */}
           <ProfileHeader
             user={user}
             onContact={() => setContactOpen(true)}
@@ -65,13 +97,14 @@ export default function UserProfile() {
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             <div className="md:col-span-2 space-y-6">
               <AboutSection user={user} />
-              <PerformanceHistory performance={user.performance} />
-              <SkillsSection skills={user.skills} />
-              <TeamsSection teams={user.teams} />
-              <TrophyRoom history={user.competitionHistory} />
+              {/* Jika Performance History belum ada di API, bisa kita beri default empty array [] */}
+              <PerformanceHistory performance={user.performance || []} />
+              <SkillsSection skills={user.skills || []} />
+              <TeamsSection teams={user.current_projects || []} />
+              <TrophyRoom history={user.achievements || []} />
             </div>
             <div>
-              <ProjectsSection projects={user.projects} />
+              <ProjectsSection projects={user.achievements || []} />
             </div>
           </div>
         </div>
@@ -79,8 +112,12 @@ export default function UserProfile() {
         <InviteToTeamModal
           open={inviteOpen}
           onOpenChange={setInviteOpen}
-          targetUser={user}
+          targetUser={user ? {
+            ...user,
+            initials: user.name?.substring(0, 2).toUpperCase()
+          } : null}
         />
+        
         <ContactModal
           open={contactOpen}
           onOpenChange={setContactOpen}

@@ -12,9 +12,10 @@ export function useEditProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Profile States
+  // Profile States - Sekarang menggunakan first_name dan last_name
   const [formData, setFormData] = useState({
-    name: "",
+    first_name: "",
+    last_name: "",
     major: "",
     institution: "",
     bio: "",
@@ -41,8 +42,19 @@ export function useEditProfile() {
 
         if (result.success) {
           const u = result.data;
+
+          let firstName = u.first_name || "";
+          let lastName = u.last_name || "";
+
+          if (!firstName && u.name) {
+            const nameParts = u.name.split(" ");
+            firstName = nameParts[0]; 
+            lastName = nameParts.slice(1).join(" "); 
+          }
+
           setFormData({
-            name: u.name || "",
+            first_name: firstName,
+            last_name: lastName,
             major: u.major || "",
             institution: u.institution || "",
             bio: u.bio || "",
@@ -64,7 +76,6 @@ export function useEditProfile() {
     fetchProfile();
   }, [toast]);
 
-  // 2. Logic Tambah/Hapus Skill
   const addSkill = (skill?: string) => {
     const value = (skill || skillInput).trim();
     if (value && !formData.skills.includes(value)) {
@@ -77,36 +88,49 @@ export function useEditProfile() {
     setFormData(prev => ({ ...prev, skills: prev.skills.filter(s => s !== skill) }));
   };
 
-  // 3. Handle Save (Update ke Laravel)
   const handleSave = async () => {
-    if (!formData.name.trim()) {
-      toast({ title: "Validation Error", description: "Name is required.", variant: "destructive" });
+    if (!formData.first_name.trim()) {
+      toast({ title: "Validation Error", description: "First name is required.", variant: "destructive" });
       return;
     }
 
     setSaving(true);
     try {
       const token = Cookies.get("token");
+
+      const payload = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        name: `${formData.first_name} ${formData.last_name}`.trim(),
+        major: formData.major,
+        institution: formData.institution,
+        bio: formData.bio,
+        skills: formData.skills,
+        github_url: formData.github_url,
+        linkedin_url: formData.linkedin_url,
+        portfolio_url: formData.portfolio_url,
+      };
+
       const res = await fetch(`${API_BASE_URL}/profile/update`, {
-        method: "POST", // Laravel Route kita pakai POST untuk update profile
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json",
         },
-        body: JSON.stringify({
-          ...formData,
-          _method: "POST" // Jika route Laravel mu menggunakan Route::put
-        }),
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.message || "Server Error");
+      }
+
       if (result.success) {
         toast({ title: "Success! ✨", description: "Profil berhasil diperbarui." });
         router.push("/profile");
-        router.refresh();
-      } else {
-        throw new Error(result.message);
+        setTimeout(() => router.refresh(), 100);
       }
     } catch (error: any) {
       toast({ title: "Update Failed", description: error.message, variant: "destructive" });
@@ -116,9 +140,14 @@ export function useEditProfile() {
   };
 
   return {
-    formData, setFormData,
-    isLoading, saving,
-    skillInput, setSkillInput,
-    addSkill, removeSkill, handleSave
+    formData,
+    setFormData,
+    isLoading,
+    saving,
+    skillInput,
+    setSkillInput,
+    addSkill,
+    removeSkill,
+    handleSave
   };
 }
