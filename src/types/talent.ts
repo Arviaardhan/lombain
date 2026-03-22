@@ -1,4 +1,5 @@
 export interface Talent {
+  avatar: string | Blob | undefined;
   id: number;
   name: string;
   initials: string;

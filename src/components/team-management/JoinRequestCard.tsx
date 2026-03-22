@@ -19,6 +19,7 @@ interface JoinRequestCardProps {
   onAccept: () => void;
   onReject: () => void;
   onDragStart?: () => void;
+  onDragEnd?: () => void;
   isDragging?: boolean;
 }
 
@@ -27,8 +28,9 @@ export default function JoinRequestCard({
   onAccept,
   onReject,
   onDragStart,
+  onDragEnd,
   isDragging
-}: JoinRequestCardProps) {
+}: JoinRequestCardProps & {onDragEnd?: () => void}) {
   return (
     <motion.div
       layout
@@ -39,9 +41,13 @@ export default function JoinRequestCard({
         rotate: isDragging ? 2 : 0,
         y: 0
       }}
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
       exit={{ opacity: 0, scale: 0.9, x: 30, transition: { duration: 0.2 } }}
+
       draggable={!!onDragStart}
       onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      
       className="group rounded-2xl border border-border bg-card p-4 pr-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-grab active:cursor-grabbing relative overflow-hidden"
     >
       <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#5A8D39]/20 group-hover:bg-[#5A8D39]/50 transition-colors" />
