@@ -250,7 +250,12 @@ export default function DiscoverTalentPage() {
       <InviteToTeamModal
         open={!!inviteUser}
         onOpenChange={(open) => !open && setInviteUser(null)}
-        targetUser={inviteUser}
+        targetUser={inviteUser ? {
+          id: inviteUser.id,
+          name: inviteUser.name,
+          initials: inviteUser.name.substring(0, 2).toUpperCase(), 
+          skills: (inviteUser.skills || []).map((s: any) => typeof s === 'string' ? s : s.name)
+        } : null}
       />
     </div>
   );

@@ -88,7 +88,7 @@ export default function Profile() {
       const result = await res.json();
       if (result.success) {
         toast({ title: "Portfolio Updated! 🚀", description: "Tautan portofolio telah berhasil diperbarui." });
-        await refresh(); // Memperbarui data profil di UI
+        await refresh(); 
         setIsLinkModalOpen(false);
       }
     } catch (error) {
@@ -173,7 +173,7 @@ export default function Profile() {
               <div className="flex flex-wrap gap-2">
                 {skills.length > 0 ? (
                   skills.map((skill: string) => (
-                    <Badge key={skill} variant="secondary" className="px-3 py-1 bg-indigo-50 text-indigo-600 border-none font-semibold rounded-lg">
+                    <Badge key={skill} variant="secondary" className="px-3 py-1 ">
                       {skill}
                     </Badge>
                   ))
