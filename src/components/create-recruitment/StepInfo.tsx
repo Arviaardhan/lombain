@@ -23,6 +23,12 @@ export default function Step0Info({
   setShowTitleSuggestions, titleSuggestions,
   titleRef, fieldClass
 }: any) {
+
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
+
   return (
     <div className="space-y-10">
       <Field label="Category" value={category} required error={errors.category}>
@@ -104,13 +110,14 @@ export default function Step0Info({
             className={`rounded-xl h-11 ${fieldClass("link")}`}
           />
         </Field>
-        <Field label="Recruitment Closes On">
+        {/* Update di sini: Ditambahkan Required dan Error mapping */}
+        <Field label="Recruitment Closes On" required error={errors.deadline}>
           <Input
             type="date"
-            min={new Date().toISOString().split("T")[0]}
+            min={minDate}
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
-            className="rounded-xl h-11 cursor-pointer"
+            className={`rounded-xl h-11 cursor-pointer ${fieldClass("deadline")}`}
           />
         </Field>
       </div>

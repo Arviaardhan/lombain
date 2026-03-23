@@ -75,8 +75,8 @@ function MemberContent({ member }: { member: MemberProfile }) {
         </a>
       )}
       {member.id && (
-        <Link href={`/profile/${member.id}`}>
-          <Button variant="outline" className="gap-2 mt-1">
+        <Link href={`/talent/${member.id}`}> {/* Ganti ke /talents/ atau /profile/ sesuai route-mu */}
+          <Button variant="outline" className="gap-2 mt-1 w-full border-slate-400 rounded-xl font-bold">
             <ExternalLink className="h-4 w-4" /> View Full Profile
           </Button>
         </Link>
