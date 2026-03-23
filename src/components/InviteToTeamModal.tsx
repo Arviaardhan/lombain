@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Send, Loader2 } from "lucide-react";
 import Cookies from "js-cookie";
 import { API_BASE_URL } from "@/lib/api-constant";
+import { parse } from "path";
 
 interface InviteToTeamModalProps {
   open: boolean;
@@ -26,14 +27,15 @@ export default function InviteToTeamModal({ open, onOpenChange, targetUser }: In
   const [isLoadingTeams, setIsLoadingTeams] = useState(false);
   const [isSending, setIsSending] = useState(false);
 
-  // 1. Fetch tim yang dipimpin oleh user (Managed Teams)
   useEffect(() => {
     if (open) {
+      setSelectedTeam("");
+      setMessage("");
+
       const fetchMyTeams = async () => {
         setIsLoadingTeams(true);
         try {
           const token = Cookies.get("token");
-          // Kita panggil dashboard data atau endpoint khusus managed teams
           const res = await fetch(`${API_BASE_URL}/user/dashboard`, {
             headers: {
               "Authorization": `Bearer ${token}`,
@@ -42,7 +44,6 @@ export default function InviteToTeamModal({ open, onOpenChange, targetUser }: In
           });
           const result = await res.json();
           if (result.success) {
-            // Ambil hanya tim di mana user adalah leader-nya
             setMyTeams(result.data.managed_teams || []);
           }
         } catch (error) {
@@ -73,7 +74,7 @@ export default function InviteToTeamModal({ open, onOpenChange, targetUser }: In
           "Accept": "application/json",
         },
         body: JSON.stringify({
-          team_id: selectedTeam,
+          team_id: parseInt(selectedTeam),
           user_id: targetUser?.id,
           note: message,
         }),
@@ -115,7 +116,7 @@ export default function InviteToTeamModal({ open, onOpenChange, targetUser }: In
         </DialogHeader>
 
         {/* Info Talent Mini Card */}
-        <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-4 mt-2">
+        <div className="flex items-center gap-4 rounded-2xl border border-slate-400 bg-slate-50/50 p-4 mt-2">
           <Avatar className="h-12 w-12 border-2 border-white shadow-sm ring-1 ring-slate-100">
             <AvatarImage src={targetUser.avatar} />
             <AvatarFallback className="bg-[#5A8D39]/10 text-[#5A8D39] font-bold text-sm">
@@ -124,39 +125,50 @@ export default function InviteToTeamModal({ open, onOpenChange, targetUser }: In
           </Avatar>
           <div className="min-w-0">
             <p className="font-bold text-sm text-slate-900 truncate">{targetUser.name}</p>
-            <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider truncate">
-              {skillsArray.length > 0 ? skillsArray.slice(0, 2).join(" • ") : "No skills listed"}
+            <p className="text-[11px] text-slate-600 font-medium uppercase tracking-wider truncate mt-1">
+              {skillsArray.length > 0 ? skillsArray.slice(0, 2).join(", ") : "No skills listed"}
             </p>
           </div>
         </div>
 
-        <div className="space-y-5 mt-6">
+        <div className="space-y-10 mt-6">
           <div className="space-y-2.5">
-            <Label className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">Pilih Tim Kamu</Label>
-            <Select value={selectedTeam} onValueChange={setSelectedTeam} disabled={isLoadingTeams}>
-              <SelectTrigger className="rounded-xl border-slate-100 h-11 focus:ring-[#5A8D39]">
+            <Label className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-600">Pilih Tim Kamu</Label>
+            <Select
+              value={selectedTeam}
+              onValueChange={setSelectedTeam}
+              disabled={isLoadingTeams}
+            >
+              <SelectTrigger className="rounded-xl border-slate-400 h-11 focus:ring-[#5A8D39] mt-3">
+                {/* SelectValue akan menampilkan placeholder jika value="" */}
                 <SelectValue placeholder={isLoadingTeams ? "Memuat tim..." : "Pilih tim untuk undangan ini"} />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-100">
+              <SelectContent className="rounded-xl">
                 {myTeams.length > 0 ? (
                   myTeams.map((team) => (
-                    <SelectItem key={team.id} value={team.id.toString()} className="text-sm font-medium">
+                    <SelectItem
+                      key={team.id}
+                      value={team.id.toString()}
+                      className="text-sm font-medium"
+                    >
                       {team.name}
                     </SelectItem>
                   ))
                 ) : (
-                  <div className="p-4 text-center text-xs text-slate-400 italic">Kamu belum memimpin tim apapun.</div>
+                  <div className="p-4 text-center text-xs text-slate-400 italic">
+                    Kamu belum memimpin tim apapun.
+                  </div>
                 )}
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2.5">
-            <Label className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400">
-              Pesan Tambahan <span className="text-slate-300 font-normal italic">(opsional)</span>
+            <Label className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-600">
+              Pesan Tambahan <span className="text-slate-500 font-normal italic">(opsional)</span>
             </Label>
             <Textarea
-              className="rounded-xl border-slate-100 focus:ring-[#5A8D39] resize-none"
+              className="rounded-xl border-slate-400 focus:ring-[#5A8D39] resize-none mt-3"
               placeholder={`Halo ${firstName}, kami sedang mencari anggota dengan keahlianmu!`}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -166,17 +178,18 @@ export default function InviteToTeamModal({ open, onOpenChange, targetUser }: In
         </div>
 
         <DialogFooter className="mt-8 flex gap-3 sm:justify-end">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="rounded-xl font-bold text-slate-400 hover:text-slate-600 px-6"
             onClick={() => onOpenChange(false)}
           >
             Batal
           </Button>
-          <Button 
-            onClick={handleSend} 
-            disabled={isSending || isLoadingTeams}
-            className="rounded-xl bg-[#5A8D39] hover:bg-[#4a752f] text-white font-bold h-11 px-8 shadow-lg shadow-green-100 transition-all active:scale-95 disabled:opacity-50"
+          <Button
+            onClick={handleSend}
+            // MODIFIKASI: Tambahkan !selectedTeam agar button mati jika tim belum dipilih
+            disabled={isSending || isLoadingTeams || !selectedTeam}
+            className="rounded-xl bg-[#5A8D39] hover:bg-[#4a752f] text-white font-bold h-11 px-8 shadow-lg shadow-green-100 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
           >
             {isSending ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />

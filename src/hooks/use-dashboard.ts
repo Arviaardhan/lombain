@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import { ENDPOINTS } from "@/lib/api-constant";
+import { API_BASE_URL, ENDPOINTS } from "@/lib/api-constant";
 import { useToast } from "@/hooks/use-toast";
 import confetti from "canvas-confetti";
 
@@ -11,6 +11,7 @@ export function useDashboard() {
     const [managedTeams, setManagedTeams] = useState<any[]>([]);
     const [joinedTeams, setJoinedTeams] = useState<any[]>([]);
     const [requests, setRequests] = useState<any[]>([]);
+    const [invitations, setInvitations] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
 
@@ -27,17 +28,16 @@ export function useDashboard() {
             const result = await res.json();
 
             if (result.success) {
-                // Format Managed Teams (Pastikan members ikut masuk)
+                // 1. Format Managed Teams (Tim yang kamu pimpin)
                 const formattedManaged = (result.data.managed_teams || []).map((t: any) => ({
                     ...t,
-                    // Pastikan properti members selalu ada (sebagai array)
                     members: t.users || [],
                     member_count: t.member_count || 0,
                     max_members: t.max_members || 0
                 }));
                 setManagedTeams(formattedManaged);
 
-                // Format Joined Teams
+                // 2. Format Joined Teams (Tim tempat kamu bergabung)
                 const formattedJoined = (result.data.joined_teams || []).map((t: any) => ({
                     ...t,
                     members: t.users || [],
@@ -46,7 +46,7 @@ export function useDashboard() {
                 }));
                 setJoinedTeams(formattedJoined);
 
-                // Format Requests (sudah benar)
+                // 3. Format Incoming Requests (Orang minta gabung ke timmu)
                 const formattedRequests = (result.data.incoming_requests || []).map((req: any) => ({
                     ...req,
                     id: req.id,
@@ -56,6 +56,16 @@ export function useDashboard() {
                     initials: req.user_name?.substring(0, 2).toUpperCase() || "??"
                 }));
                 setRequests(formattedRequests);
+
+                // 4. Set Invitations (Tim yang mengundang kamu)
+                // Pastikan di Laravel kamu mengirim key 'invites'
+                const formattedInvites = (result.data.invites || []).map((inv: any) => ({
+                    ...inv,
+                    // Tambahkan mapping jika ada field yang berbeda namanya
+                    team_name: inv.team_name,
+                    leader_name: inv.leader_name
+                }));
+                setInvitations(formattedInvites);
             }
         } catch (error) {
             console.error("Dashboard error:", error);
@@ -75,6 +85,41 @@ export function useDashboard() {
             origin: { y: 0.6 },
             colors: ["#5A8D39", "#ABC123"]
         });
+    };
+
+    const handleInviteResponse = async (inviteId: number, action: 'accept' | 'reject') => {
+        try {
+            const token = Cookies.get("token");
+            const res = await fetch(`${API_BASE_URL}/teams/respond-invite`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
+                body: JSON.stringify({
+                    invite_id: inviteId,
+                    action: action
+                }),
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                // Hapus dari list undangan di UI
+                setInvitations((prev) => prev.filter((i) => i.id !== inviteId));
+
+                if (action === 'accept') {
+                    fireConfetti();
+                    toast({ title: "Berhasil!", description: "Kamu telah bergabung dengan tim baru." });
+                    fetchDashboardData(); // Refresh untuk update "Teams I Joined"
+                } else {
+                    toast({ title: "Ditolak", description: "Undangan tim telah dihapus." });
+                }
+            }
+        } catch (error) {
+            toast({ variant: "destructive", title: "Error", description: "Gagal memproses undangan." });
+        }
     };
 
     // --- LOGIC: APPROVE REQUEST ---
@@ -138,17 +183,19 @@ export function useDashboard() {
         toast({ title: "Member Removed", description: `${memberName} telah dikeluarkan dari tim.` });
     };
 
-    // PASTIKAN SEMUA FUNCTION DI-RETURN DI SINI
     return {
         managedTeams,
         joinedTeams,
         requests,
+        invitations,
         isLoading,
         expandedTeam,
         setExpandedTeam,
-        handleApprove,      // <-- Ini yang tadi kurang
-        handleDecline,      // <-- Ini juga
-        handleRemoveMember,  // <-- Dan ini
+        handleApprove,
+        handleDecline,
+        handleRemoveMember,
+        handleAcceptInvite: (inviteId: number) => handleInviteResponse(inviteId, 'accept'),
+        handleRejectInvite: (inviteId: number) => handleInviteResponse(inviteId, 'reject'),
         refresh: fetchDashboardData,
         fireConfetti
     };
