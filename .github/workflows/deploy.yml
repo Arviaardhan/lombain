@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 25
 
       # 🔥 Install deps
       - name: Install deps
@@ -25,12 +25,15 @@ jobs:
       # 🔥 Build
       - name: Build
         run: npm run build
+        env:
+          NEXT_PUBLIC_BACKEND_URL: ${{ secrets.ENV_NEXT_PUBLIC_BACKEND_URL }}
+          NEXT_PUBLIC_BACKEND_API_PATH: ${{ secrets.ENV_NEXT_PUBLIC_BACKEND_API_PATH }}
 
       # 🔥 Install production deps only
       - name: Install production deps only
         run: |
           rm -rf node_modules
-          npm install --production
+          npm install --omit=dev
 
       # 🔥 Prepare folder + zip
       - name: Zip project
