@@ -1,5 +1,5 @@
-export const BASE_URL = "http://127.0.0.1:8000";
-export const API_BASE_URL = `${BASE_URL}/api`;
+export const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
+export const API_BASE_URL = `${BASE_URL}${process.env.NEXT_PUBLIC_BACKEND_API_PATH}`;
 
 export const ENDPOINTS = {
   // Auth
@@ -23,13 +23,15 @@ export const ENDPOINTS = {
   MY_TEAMS: `${API_BASE_URL}/my/teams`,
 
   // Team Management
-  TEAM_REQUESTS: (id: string | number) => `${API_BASE_URL}/teams/${id}/requests`,
-  TEAM_STRUCTURE: (id: string | number) => `${API_BASE_URL}/teams/${id}/structure`,
+  TEAM_REQUESTS: (id: string | number) =>
+    `${API_BASE_URL}/teams/${id}/requests`,
+  TEAM_STRUCTURE: (id: string | number) =>
+    `${API_BASE_URL}/teams/${id}/structure`,
   INVITE_MEMBER: `${API_BASE_URL}/teams/invite`,
   RESPOND_INVITE: `${API_BASE_URL}/teams/respond-invite`,
   ASSIGN_ROLE: `${API_BASE_URL}/teams/assign-role`,
   REJECT_REQUEST: (id: string | number) => `${API_BASE_URL}/teams/reject/${id}`,
-  REMOVE_MEMBER: (teamId: string | number, userId: string | number) => 
+  REMOVE_MEMBER: (teamId: string | number, userId: string | number) =>
     `${API_BASE_URL}/teams/${teamId}/members/${userId}`,
 
   // Roles
