@@ -126,6 +126,42 @@ export default function Navbar() {
             </button>
           </div>
         </div>
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="border-t border-border bg-background p-4 md:hidden animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="flex flex-col gap-2">
+              {isLoggedIn ? (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="w-full text-red-500 hover:text-red-600 hover:bg-red-50"
+                  >
+                    Log Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Button variant="outline" className="w-full">
+                      Log In
+                    </Button>
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Button className="w-full">Sign Up</Button>
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Mobile Bottom Nav - Hanya muncul jika Login */}
