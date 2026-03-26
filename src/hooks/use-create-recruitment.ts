@@ -20,15 +20,24 @@ export function useCreateRecruitment() {
     const [category, setCategory] = useState("");
     const [headline, setHeadline] = useState("");
     const [link, setLink] = useState("");
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState(""); // Ini untuk "Visi"
     const [deadline, setDeadline] = useState("");
     const [whatsappLink, setWhatsappLink] = useState("");
     const [resourceLink, setResourceLink] = useState("");
+    
+    // --- TAMBAHAN STATE OBJEKTIF ---
+    const [objectives, setObjectives] = useState<string[]>([""]); 
 
-    // Roles States
-    const [roles, setRoles] = useState<{ role: string; skills: string[]; max_slot?: number }[]>([]);
+    // --- UPDATE STRUKTUR ROLES ---
+    // Sekarang menggunakan 'role_name' dan 'description' (untuk tanggung jawab)
+    const [roles, setRoles] = useState<{ 
+        role_name: string; 
+        description: string; 
+        skills: string[]; 
+        max_slot: number 
+    }[]>([]);
+
     const [leaderRole, setLeaderRole] = useState("");
-    const [newRole, setNewRole] = useState("");
     const [newSkill, setNewSkill] = useState("");
     const [editingRoleIndex, setEditingRoleIndex] = useState<number | null>(null);
 
@@ -45,33 +54,38 @@ export function useCreateRecruitment() {
 
     const fieldClass = (key: string) => (errors[key] ? "border-destructive" : "");
 
-    // Roles Logic
+    // --- LOGIC OBJEKTIF ---
+    const addObjective = () => setObjectives([...objectives, ""]);
+    const updateObjective = (index: number, value: string) => {
+        const newObj = [...objectives];
+        newObj[index] = value;
+        setObjectives(newObj);
+    };
+    const removeObjective = (index: number) => setObjectives(objectives.filter((_, i) => i !== index));
+
+    // --- LOGIC ROLES (UPDATED) ---
     const addRole = () => {
-        if (newRole.trim()) {
-            setRoles([...roles, { role: newRole.trim(), skills: [], max_slot: 1 }]);
-            setNewRole("");
-            setEditingRoleIndex(roles.length);
-        }
+        // Menambah section role kosong baru
+        setRoles([...roles, { role_name: "", description: "", skills: [], max_slot: 1 }]);
     };
 
-    const addSkillToRole = (index: number) => {
-        if (newSkill.trim()) {
+    const updateRoleField = (index: number, field: string, value: any) => {
+        const updated = [...roles];
+        (updated[index] as any)[field] = value;
+        setRoles(updated);
+    };
+
+    const addSkillToRole = (index: number, skill: string) => {
+        if (skill.trim()) {
             const updated = [...roles];
-            updated[index].skills.push(newSkill.trim());
+            updated[index].skills.push(skill.trim());
             setRoles(updated);
             setNewSkill("");
         }
     };
 
-    const updateRoleSlot = (index: number, value: number) => {
-        const updated = [...roles];
-        updated[index].max_slot = Math.max(1, value);
-        setRoles(updated);
-    };
-
     const removeRole = (index: number) => {
         setRoles(roles.filter((_, i) => i !== index));
-        setEditingRoleIndex(null);
     };
 
     const removeSkill = (roleIndex: number, skillIndex: number) => {
@@ -88,19 +102,20 @@ export function useCreateRecruitment() {
         try {
             const token = Cookies.get("token");
 
-            // Mapping ke format yang diminta Laravel store()
             const payload = {
                 name: `Team ${title}`,
                 headline: headline,
                 competition_name: title,
                 category: category,
+                description: description, // Visi
+                objectives: objectives.filter(o => o.trim() !== ""), // Simpan poin yang ada isinya
                 max_members: calculatedMaxMembers,
                 deadline: deadline,
-                description: description,
                 guidebook_url: resourceLink,
                 leader_role_name: leaderRole,
                 roles: roles.map(r => ({
-                    role_name: r.role,
+                    role_name: r.role_name,
+                    description: r.description, // Tanggung Jawab
                     max_slot: r.max_slot || 1,
                     skills: r.skills
                 }))
@@ -138,19 +153,13 @@ export function useCreateRecruitment() {
 
     const isNextDisabled = useMemo(() => {
         if (step === 0) {
-            // Validasi dasar
             const baseValid = !title.trim() || !category || !headline.trim() || !deadline;
-
-            // Validasi tambahan: Deadline harus lebih besar dari hari ini
             const selectedDate = new Date(deadline);
             const today = new Date();
-            today.setHours(0, 0, 0, 0); // Reset waktu ke 00:00 agar perbandingannya hanya tanggal
-
+            today.setHours(0, 0, 0, 0);
             const isDateInvalid = deadline ? selectedDate <= today : true;
-
             return baseValid || isDateInvalid;
         }
-
         if (step === 1) return description.trim().length < 10;
         if (step === 2) return roles.length === 0 || !leaderRole.trim();
         return false;
@@ -161,10 +170,11 @@ export function useCreateRecruitment() {
         title, setTitle, category, setCategory, headline, setHeadline,
         link, setLink, description, setDescription, deadline, setDeadline,
         whatsappLink, setWhatsappLink, resourceLink, setResourceLink,
-        roles, setRoles, newRole, setNewRole, leaderRole, setLeaderRole, newSkill, setNewSkill,
+        objectives, addObjective, updateObjective, removeObjective,
+        roles, setRoles, leaderRole, setLeaderRole, newSkill, setNewSkill,
         editingRoleIndex, setEditingRoleIndex, errors, showTitleSuggestions,
         setShowTitleSuggestions, titleSuggestions, titleRef,
-        fieldClass, addRole, updateRoleSlot, addSkillToRole, removeRole, removeSkill,
+        fieldClass, addRole, updateRoleField, addSkillToRole, removeRole, removeSkill,
         handleSubmit, isNextDisabled
     };
 }

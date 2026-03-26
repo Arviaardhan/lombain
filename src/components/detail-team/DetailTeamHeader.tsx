@@ -2,113 +2,109 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  ExternalLink, 
-  Users, 
-  CheckCircle2, 
-  Clock, 
-  MapPin, 
-  CalendarDays,
-  History,
-  School
+import {
+  ExternalLink,
+  Users,
+  Clock,
+  MapPin,
+  Calendar,
 } from "lucide-react";
 
-export default function DetailTeamHeader({ detail, status, onJoin }: any) {
-  // Fungsi format tanggal sederhana (ID)
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
+export default function DetailTeamHeader({ detail }: any) {
+  // Hitung sisa slot
+  const slotsLeft = detail.max_members - (detail.users_count || 1);
+
+  // Formatter tanggal agar rapi
+  const formatDate = (dateInput: any) => {
+    if (!dateInput) return "TBA";
+    try {
+      const date = new Date(dateInput);
+      return date.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    } catch { return dateInput; }
   };
 
   return (
-    <div className="rounded-[1.5rem] border border-slate-400 bg-white p-6 md:p-8">
-      <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-        <div className="space-y-4">
-          {/* Status Badges - Font sedikit diperbesar (text-[10px]) */}
-          <div className="flex flex-wrap gap-2">
-            <Badge className="bg-white text-slate-500 border-slate-600 border-1 hover:bg-white font-bold px-2.5 py-1 rounded-xl uppercase text-[10px] tracking-wider">
-              {detail.category}
-            </Badge>
-            <Badge className="bg-[#5A8D39] text-white border-none font-bold px-2.5 py-1 rounded-xl text-[10px]">
-              <Users className="mr-1.5 h-3.5 w-3.5" /> {detail.slots} MEMBERS
-            </Badge>
+    <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all">
+      {/* Garis aksen tipis (3px saja agar lebih halus) */}
+      <div className="absolute top-0 left-0 right-0 h-[7px] bg-gradient-to-r from-[#5A8D39] to-[#A3C98C] opacity-90 mb-3" />
 
-            {status === "accepted" && (
-              <Badge className="bg-[#5A8D39] text-white border-none gap-1 font-bold px-2.5 py-1 rounded-md text-[10px]">
-                <CheckCircle2 className="h-3.5 w-3.5" /> JOINED
+      <div className="px-6 py-6 md:px-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+          <div className="flex-1 space-y-5">
+
+            {/* Top Badges - Skala kecil */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <Badge variant="outline" className="rounded-2xl border-slate-200 bg-white px-4 py-2 text-[10px] font-bold text-slate-700 shadow-none uppercase tracking-wider">
+                {detail.category}
               </Badge>
-            )}
-            {status === "pending" && (
-              <Badge className="bg-amber-100 hover:bg-amber-300 text-amber-600 border-amber-200 gap-1 font-bold px-2.5 py-1 rounded-xl text-[10px]">
-                <Clock className="h-3.5 w-3.5" /> PENDING
+
+              <Badge className="rounded-2xl border-none bg-orange-50 px-4 py-2 text-[12px] font-bold text-orange-400 shadow-none flex items-center gap-1.5">
+                <Users className="h-3 w-3" />
+                {slotsLeft} slot tersisa
               </Badge>
-            )}
-          </div>
-
-          {/* Title */}
-          <h1 className="text-xl font-black md:text-2xl text-slate-900 tracking-tight leading-tight">
-            {detail.title}
-          </h1>
-
-          {/* Meta Info Block - Sekarang ditaruh di bawah nama institusi */}
-          <div className="space-y-5 pt-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[13px] font-semibold text-slate-500">{detail.campus}</span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-13 gap-y-3">
-              {/* Posted Date */}
-              <div className="flex items-center gap-3">
-                <History className="h-6 w-6 text-slate-400" />
-                <div className="flex flex-col">
-                   <span className="text-[9px] font-black text-slate-400 uppercase leading-none mb-0.5">Posted</span>
-                   <span className="text-[12px] font-bold text-slate-600">{formatDate(detail.created_at || new Date())}</span>
-                </div>
+            <div className="space-y-2.5">
+              <h1 className="text-2xl font-black tracking-tight text-slate-900 md:text-4xl leading-tight max-w-2xl">
+                {detail.title}
+              </h1>
+
+              <div className="flex items-center gap-3 pl-1 pt-3">
+                <div className="h-6 w-[3px] rounded-full bg-[#5A8D39]/30" />
+                <p className="text-sm font-medium italic text-slate-500 md:text-base">
+                  "{detail.headline}"
+                </p>
+              </div>
+            </div>
+
+            {/* Meta Info Row - Ikon & Text lebih kecil */}
+            <div className="grid grid-cols-2 gap-x-4 gap-y-5 pt-4 border-t border-slate-50 md:flex md:flex-wrap md:items-center md:gap-x-6 md:gap-y-3">
+
+              {/* 1. Institusi - Full width di mobile */}
+              <div className="flex items-center gap-2 text-slate-500 col-span-2 md:col-span-1">
+                <MapPin className="h-4 w-4 text-[#134686]" />
+                <span className="text-xs font-bold text-[#134686]">{detail.campus}</span>
               </div>
 
-              {/* Close Registration */}
-              <div className="flex items-center gap-3">
-                <CalendarDays className="h-6 w-6 text-amber-600" />
-                <div className="flex flex-col">
-                  <span className="text-[9px] font-black text-amber-600 uppercase leading-none mb-0.5">Close Registration</span>
-                  <span className="text-[12px] font-black text-slate-900">{formatDate(detail.deadline)}</span>
-                </div>
+              {/* 2. Deadline - Sebelah kiri di mobile */}
+              <div className="flex items-center gap-2 text-amber-600 col-span-1">
+                <Calendar className="h-4 w-4 text-amber-600" />
+                <span className="text-xs font-bold">
+                  Deadline: {formatDate(detail.deadline)}
+                </span>
+              </div>
+
+              {/* 3. Member - Sebelah kanan di mobile */}
+              <div className="flex items-center gap-2 text-slate-500 col-span-1">
+                <Users className="h-4 w-4 text-slate-400" />
+                <span className="text-xs font-bold text-slate-600">
+                  {detail.users_count || 1}/{detail.max_members} anggota
+                </span>
+              </div>
+
+              {/* 4. Posted - Baris baru di mobile */}
+              <div className="flex items-center gap-2 text-slate-500 col-span-2 md:col-span-1">
+                <Clock className="h-4 w-4 text-slate-400" />
+                <span className="text-xs font-bold text-slate-600">{detail.posted || "Baru saja"}</span>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-2 shrink-0 md:self-start">
-          <Button 
-            variant="outline" 
-            className="rounded-xl border-slate-400 font-bold text-slate-600 h-11 px-5 text-xs hover:bg-[#5A8D39]/10 transition-all active:scale-95"
-            onClick={() => window.open(detail.competitionLink, "_blank")}
-          >
-            <ExternalLink className="h-4 w-4 mr-2" /> Competition Link
-          </Button>
-
-          {status === "pending" ? (
-            <Button disabled className="h-11 px-8 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 font-black text-xs opacity-100">
-              PENDING
-            </Button>
-          ) : status === "accepted" ? (
-            <Button disabled className="h-11 px-8 rounded-xl bg-green-50 text-[#5A8D39] border border-green-200 font-black text-xs opacity-100">
-              JOINED
-            </Button>
-          ) : (
-            <Button 
-              onClick={onJoin} 
-              className="h-11 px-10 rounded-xl bg-[#5A8D39] hover:bg-[#4a752f] text-white font-black text-xs shadow-none transition-all active:scale-95"
+          {/* Action Button - Lebih Proporsional */}
+          <div className="shrink-0">
+            <Button
+              variant="outline"
+              className="h-10 rounded-xl border-slate-200 bg-white px-5 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2"
+              onClick={() => window.open(detail.guidebook_url || "#", "_blank")}
             >
-              JOIN TEAM
+              <ExternalLink className="h-3.5 w-3.5" />
+              Link Kompetisi
             </Button>
-          )}
+          </div>
         </div>
       </div>
     </div>

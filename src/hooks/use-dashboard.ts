@@ -1,4 +1,6 @@
 "use client";
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
 
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
@@ -14,6 +16,7 @@ export function useDashboard() {
     const [invitations, setInvitations] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
+    const [notifications, setNotifications] = useState<any[]>([]);
 
     const fetchDashboardData = async () => {
         setIsLoading(true);
@@ -28,44 +31,23 @@ export function useDashboard() {
             const result = await res.json();
 
             if (result.success) {
-                // 1. Format Managed Teams (Tim yang kamu pimpin)
-                const formattedManaged = (result.data.managed_teams || []).map((t: any) => ({
+                setManagedTeams((result.data.managed_teams || []).map((t: any) => ({
                     ...t,
                     members: t.users || [],
-                    member_count: t.member_count || 0,
-                    max_members: t.max_members || 0
-                }));
-                setManagedTeams(formattedManaged);
+                })));
 
-                // 2. Format Joined Teams (Tim tempat kamu bergabung)
-                const formattedJoined = (result.data.joined_teams || []).map((t: any) => ({
+                setJoinedTeams((result.data.joined_teams || []).map((t: any) => ({
                     ...t,
                     members: t.users || [],
-                    member_count: t.member_count || 0,
-                    max_members: t.max_members || 0
-                }));
-                setJoinedTeams(formattedJoined);
+                })));
 
-                // 3. Format Incoming Requests (Orang minta gabung ke timmu)
-                const formattedRequests = (result.data.incoming_requests || []).map((req: any) => ({
+                setRequests((result.data.incoming_requests || []).map((req: any) => ({
                     ...req,
-                    id: req.id,
-                    name: req.user_name,
-                    team: req.team_name,
-                    role: req.role_name || "Member",
                     initials: req.user_name?.substring(0, 2).toUpperCase() || "??"
-                }));
-                setRequests(formattedRequests);
+                })));
 
-                // 4. Set Invitations (Tim yang mengundang kamu)
-                // Pastikan di Laravel kamu mengirim key 'invites'
-                const formattedInvites = (result.data.invites || []).map((inv: any) => ({
-                    ...inv,
-                    // Tambahkan mapping jika ada field yang berbeda namanya
-                    team_name: inv.team_name,
-                    leader_name: inv.leader_name
-                }));
-                setInvitations(formattedInvites);
+                setInvitations(result.data.invites || []);
+                setNotifications(result.data.notifications || []);
             }
         } catch (error) {
             console.error("Dashboard error:", error);
@@ -87,10 +69,11 @@ export function useDashboard() {
         });
     };
 
-    const handleInviteResponse = async (inviteId: number, action: 'accept' | 'reject') => {
+    // FUNGSI TUNGGAL UNTUK RESPON UNDANGAN
+    const handleInviteResponse = async (inviteId: number, action: 'accept' | 'reject'): Promise<boolean> => {
         try {
             const token = Cookies.get("token");
-            const res = await fetch(`${API_BASE_URL}/teams/respond-invite`, {
+            const res = await fetch(ENDPOINTS.RESPOND_INVITE, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -105,24 +88,49 @@ export function useDashboard() {
 
             const result = await res.json();
 
-            if (result.success) {
-                // Hapus dari list undangan di UI
+            if (res.ok && result.success) {
                 setInvitations((prev) => prev.filter((i) => i.id !== inviteId));
-
                 if (action === 'accept') {
                     fireConfetti();
-                    toast({ title: "Berhasil!", description: "Kamu telah bergabung dengan tim baru." });
-                    fetchDashboardData(); // Refresh untuk update "Teams I Joined"
-                } else {
-                    toast({ title: "Ditolak", description: "Undangan tim telah dihapus." });
+                    fetchDashboardData();
                 }
+                return true;
             }
-        } catch (error) {
-            toast({ variant: "destructive", title: "Error", description: "Gagal memproses undangan." });
+            throw new Error(result.message || "Gagal memproses");
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error.message || "Gagal memproses undangan."
+            });
+            return false;
         }
     };
 
-    // --- LOGIC: APPROVE REQUEST ---
+    const markAsRead = async () => {
+        // Cari notifikasi yang belum dibaca
+        const unreadCount = notifications.filter(n => !n.read_at).length;
+        if (unreadCount === 0) return;
+
+        try {
+            const token = Cookies.get("token");
+            const res = await fetch(`${API_BASE_URL}/notifications/mark-as-read`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json",
+                },
+            });
+
+            if (res.ok) {
+                // Update state lokal agar titik merah langsung hilang tanpa refresh
+                setNotifications(prev => prev.map(n => ({ ...n, read_at: new Date() })));
+            }
+        } catch (error) {
+            console.error("Gagal mark as read:", error);
+        }
+    };
+
     const handleApprove = async (req: any) => {
         try {
             const token = Cookies.get("token");
@@ -148,39 +156,20 @@ export function useDashboard() {
                     title: "🎉 Berhasil!",
                     description: `${req.name} sekarang resmi menjadi bagian dari tim ${req.team}.`,
                 });
-                fetchDashboardData(); // Refresh data untuk update jumlah member di list team
-            } else {
-                toast({ variant: "destructive", title: "Gagal Approve", description: result.message });
+                fetchDashboardData();
             }
         } catch (error) {
-            toast({ variant: "destructive", title: "Error", description: "Terjadi kesalahan koneksi." });
+            toast({ variant: "destructive", title: "Error", description: "Koneksi bermasalah." });
         }
     };
 
-    // --- LOGIC: DECLINE REQUEST ---
     const handleDecline = async (requestId: number) => {
-        // Di sini kamu bisa tambahkan fetch ke API Decline jika sudah ada
-        // Untuk sementara kita filter dari state
         setRequests((prev) => prev.filter((r) => r.id !== requestId));
-        toast({ title: "Request Declined", description: "Permintaan bergabung telah ditolak." });
+        toast({ title: "Request Declined", description: "Permintaan telah ditolak." });
     };
 
-    // --- LOGIC: REMOVE MEMBER ---
     const handleRemoveMember = async (teamName: string, memberName: string) => {
-        // Implementasi API Remove Member bisa ditaruh di sini
-        // Untuk MVP kita update state lokal dulu
-        setManagedTeams((prev) =>
-            prev.map((t) =>
-                t.name === teamName
-                    ? {
-                        ...t,
-                        member_count: t.member_count - 1,
-                        members: t.members.filter((m: any) => m.name !== memberName),
-                    }
-                    : t
-            )
-        );
-        toast({ title: "Member Removed", description: `${memberName} telah dikeluarkan dari tim.` });
+        toast({ title: "Member Removed", description: `${memberName} telah dikeluarkan.` });
     };
 
     return {
@@ -190,6 +179,8 @@ export function useDashboard() {
         invitations,
         isLoading,
         expandedTeam,
+        notifications,
+        markAsRead,
         setExpandedTeam,
         handleApprove,
         handleDecline,

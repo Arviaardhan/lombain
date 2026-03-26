@@ -14,6 +14,9 @@ export function useTeamManagement(teamId: string) {
     const [roles, setRoles] = useState<any[]>([]);
     const [requests, setRequests] = useState<any[]>([]);
     const [recommendedRoleId, setRecommendedRoleId] = useState<string | null>(null);
+    const [isDirty, setIsDirty] = useState(false);
+    const [teamStatus, setTeamStatus] = useState<string | null>(null);
+    const [unassignedMembers, setUnassignedMembers] = useState<any[]>([]);
 
     const fireConfetti = () => {
         confetti({
@@ -27,24 +30,92 @@ export function useTeamManagement(teamId: string) {
     const fetchManagementData = useCallback(async () => {
         try {
             const token = Cookies.get("token");
-            const res = await fetch(ENDPOINTS.TEAM_DETAIL(teamId), {
-                headers: { "Authorization": `Bearer ${token}` }
-            });
-            const result = await res.json();
 
-            if (result.success) {
-                const team = result.data;
-                const rolesWithMembers = team.roles.map((role: any) => ({
-                    ...role,
-                    members: team.users.filter((user: any) => user.pivot?.role_id === role.id)
-                }));
-                setTeamData(team);
-                setRoles(rolesWithMembers);
+            const [resTeam, resStructure] = await Promise.all([
+                fetch(ENDPOINTS.TEAM_DETAIL(teamId), {
+                    headers: { Authorization: `Bearer ${token}` }
+                }),
+                fetch(ENDPOINTS.TEAM_STRUCTURE(teamId), {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+            ]);
+
+            const resultTeam = await resTeam.json();
+            const resultStructure = await resStructure.json();
+
+            if (resultTeam.success && resultStructure.success) {
+                setTeamData(resultTeam.data);
+
+                // ✅ FIX STRUCTURE
+                setRoles(resultStructure.data.roles || []);
+                setUnassignedMembers(resultStructure.data.unassigned || []);
+
+                const isLocked = resultTeam.data.status === "locked";
+
+                // 🔥 FIX: akses roles
+                const hasAssignedMember = resultStructure.data.roles.some((role: any) =>
+                    role.members?.some((m: any) => m.status === "assigned")
+                );
+
+                setIsDirty(!isLocked && hasAssignedMember);
             }
         } catch (error) {
-            toast({ title: "Error", description: "Gagal memuat data tim.", variant: "destructive" });
+            console.error("Fetch Error:", error);
         }
-    }, [teamId, toast]);
+    }, [teamId]);
+
+    const handleAccept = async (reqId: string | number, roleId: string | number) => {
+        const previousRoles = [...roles];
+        const previousUnassigned = [...unassignedMembers];
+
+        // 1. Cari data member di waiting list
+        const member = unassignedMembers.find(m => m.id === reqId);
+        if (!member) return;
+
+        // --- OPTIMISTIC UPDATE ---
+        setUnassignedMembers(prev => prev.filter(m => m.id !== reqId));
+        setRoles(prev => prev.map(role => {
+            if (role.id === roleId) {
+                return {
+                    ...role,
+                    filled: (role.filled || 0) + 1,
+                    members: [...(role.members || []), {
+                        id: member.user_id, // Gunakan user_id asli
+                        name: member.name,
+                        status: 'assigned'
+                    }]
+                };
+            }
+            return role;
+        }));
+        setIsDirty(true);
+
+        try {
+            const token = Cookies.get("token");
+            const res = await fetch(`${API_BASE_URL}/teams/assign-role`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    request_id: reqId, // ✅ Gunakan ID pivot dari unassigned list
+                    role_id: roleId,
+                })
+            });
+
+            const result = await res.json();
+            if (!result.success) throw new Error(result.message);
+
+            await fetchManagementData(); // Refresh untuk sinkronisasi status 'assigned'
+
+        } catch (error: any) {
+            setRoles(previousRoles);
+            setUnassignedMembers(previousUnassigned);
+            toast({ title: "Gagal assign role", description: error.message, variant: "destructive" });
+        }
+    };
 
     const fetchRequests = useCallback(async () => {
         try {
@@ -82,77 +153,52 @@ export function useTeamManagement(teamId: string) {
         if (teamId) loadAllData();
     }, [teamId, fetchManagementData, fetchRequests]);
 
-    const handleAccept = async (reqId: string | number, roleId: string | number) => {
-        const applicant = requests.find(r => r.id === reqId);
-        if (!applicant) return;
-
-        console.group(`🚀 Drag & Drop: ${applicant.user.name}`);
-        console.log("1. Data Pelamar:", applicant);
-        console.log("2. Target Role ID:", roleId);
-
-        // Backup state untuk rollback jika API gagal
-        const previousRequests = [...requests];
-        const previousRoles = [...roles];
-
-        // --- OPTIMISTIC UPDATE (INSTANT UI) ---
-        console.log("3. Menjalankan Optimistic Update (Hapus dari list, masukkan ke role)...");
-
-        setRequests(prev => prev.filter(r => r.id !== reqId));
-        setRoles(prev => prev.map(role => {
-            if (role.id === roleId) {
-                return {
-                    ...role,
-                    filled: (role.filled || 0) + 1,
-                    members: [...(role.members || []), {
-                        id: applicant.id,
-                        name: applicant.user.name,
-                        isOptimistic: true // Tanda bahwa ini sedang diproses
-                    }]
-                };
-            }
-            return role;
-        }));
-
-        // --- API CALL ---
+    const handleFinalize = async () => {
         try {
-            console.log("4. Mengirim request ke database via Laravel API...");
             const token = Cookies.get("token");
-            const res = await fetch(`${API_BASE_URL}/teams/assign-role`, {
+
+            const res = await fetch(`${API_BASE_URL}/teams/${teamId}/finalize`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json",
                     "Accept": "application/json"
-                },
-                body: JSON.stringify({ request_id: reqId, role_id: roleId })
+                }
             });
 
             const result = await res.json();
 
+            // ✅ DEBUG DI SINI
+            console.log("FINALIZE RESPONSE:", result);
+            console.log("USERS:", result.data?.users);
+
             if (result.success) {
-                console.log("✅ 5. Database Berhasil Diupdate:", result);
+                setTeamStatus(result.data.status);
                 fireConfetti();
-                toast({ title: "🎉 Berhasil!", description: `${applicant.user.name} resmi bergabung.` });
 
-                // Sinkronisasi data asli untuk menghilangkan tanda 'isOptimistic'
-                await fetchManagementData();
-            } else {
-                throw new Error(result.message);
+                toast({
+                    title: "Tim Resmi Dikunci! 🔒",
+                    description: "Email notifikasi telah dikirim ke semua anggota."
+                });
+
+                await Promise.all([
+                    fetchManagementData(),
+                    fetchRequests()
+                ]);
+
+                setIsDirty(false);
+
+                return true;
             }
-        } catch (error: any) {
-            console.error("❌ 5. Database Gagal Diupdate, Melakukan Rollback...");
-            console.error("Error Detail:", error.message);
+        } catch (error) {
+            console.error("FINALIZE ERROR:", error);
 
-            // ROLLBACK
-            setRequests(previousRequests);
-            setRoles(previousRoles);
             toast({
                 title: "Gagal",
-                description: error.message || "Koneksi bermasalah.",
                 variant: "destructive"
             });
         }
-        console.groupEnd();
+
+        return false;
     };
 
     const handleReject = async (reqId: string) => {
@@ -227,109 +273,93 @@ export function useTeamManagement(teamId: string) {
         return false;
     };
 
-    const autoAssignRole = async (reqId: string | number) => {
-        const applicant = requests.find(r => r.id === reqId);
-        if (!applicant) return;
+    const assignRole = async (userId: string, roleId: string) => {
+        try {
+            const token = Cookies.get("token");
 
-        const applicantSkills = applicant.user.skills.map((s: any) =>
-            (typeof s === 'string' ? s : s.name).toLowerCase()
-        );
+            const res = await fetch(`${API_BASE_URL}/teams/assign-role`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    team_id: teamId,
+                    user_id: userId,
+                    role_id: roleId
+                })
+            });
 
-        console.group(`🤖 Auto-Assign: ${applicant.user.name}`);
+            const result = await res.json();
 
-        // Cari role yang paling cocok berdasarkan jumlah skill yang sama
-        let bestMatchRoleId = null;
-        let maxMatchCount = -1;
-
-        roles.forEach(role => {
-            const roleRequiredSkills = role.skills?.map((s: any) => s.skill_name.toLowerCase()) || [];
-
-            // Hitung berapa banyak skill pelamar yang ada di role ini
-            const matchCount = applicantSkills.filter((skill: string) =>
-                roleRequiredSkills.includes(skill)
-            ).length;
-
-            console.log(`Checking Role [${role.role_name}]: ${matchCount} skills matched`);
-
-            // Pilih role dengan match terbanyak dan belum penuh
-            const isFull = (role.filled || 0) >= (role.max_slot || 1);
-            if (matchCount > maxMatchCount && !isFull) {
-                maxMatchCount = matchCount;
-                bestMatchRoleId = role.id;
+            if (result.success) {
+                await fetchManagementData();
             }
-        });
-
-        console.groupEnd();
-
-        if (bestMatchRoleId) {
-            // Panggil handleAccept yang sudah ada dengan role yang ditemukan
-            await handleAccept(reqId, bestMatchRoleId);
-        } else {
-            // Jika tidak ada yang cocok atau semua penuh, ambil role pertama yang masih sisa slot
-            const firstAvailableRole = roles.find(r => (r.filled || 0) < (r.max_slot || 1));
-            if (firstAvailableRole) {
-                await handleAccept(reqId, firstAvailableRole.id);
-            } else {
-                toast({
-                    title: "Gagal Auto-Assign",
-                    description: "Semua role sudah penuh!",
-                    variant: "destructive"
-                });
-            }
+        } catch (err) {
+            console.error(err);
         }
     };
 
-    const calculateRecommendation = useCallback((reqId: string | number) => {
-        const applicant = requests.find(r => r.id === reqId);
-        if (!applicant) return;
+    const autoAssignRole = async (memberId: string) => {
+        const member = unassignedMembers.find(m => m.id === memberId);
+        if (!member) return;
 
-        // Ambil skill pelamar (pastikan formatnya seragam lowercase)
-        const applicantSkills = applicant.user.skills.map((s: any) =>
-            (typeof s === 'string' ? s : s.name).toLowerCase()
-        );
-
-        let bestMatchRoleId = null;
-        let maxMatchCount = -1;
-
-        console.group(`🎯 Menghitung Rekomendasi: ${applicant.user.name}`);
+        let bestRoleId: string | null = null;
+        let bestScore = 0;
 
         roles.forEach(role => {
-            // Jangan rekomendasikan role yang sudah penuh
-            const isFull = (role.filled || 0) >= (role.max_slot || 1);
-            if (isFull) return;
+            let score = 0;
 
-            const roleRequiredSkills = role.skills?.map((s: any) => s.skill_name.toLowerCase()) || [];
+            role.required_skills?.forEach((skill: string) => {
+                if (member.skills?.includes(skill)) {
+                    score++;
+                }
+            });
 
-            // Hitung skor kecocokan skill
-            const matchCount = applicantSkills.filter((skill: string) =>
-                roleRequiredSkills.includes(skill)
-            ).length;
-
-            console.log(`- Role [${role.role_name}]: ${matchCount} skills matched`);
-
-            // Pilih yang skornya tertinggi
-            if (matchCount > maxMatchCount && matchCount > 0) { // Minimal ada 1 skill yang cocok
-                maxMatchCount = matchCount;
-                bestMatchRoleId = role.id;
+            if (score > bestScore) {
+                bestScore = score;
+                bestRoleId = role.id;
             }
         });
 
-        console.log(`🏆 Rekomendasi Terbaik: Role ID [${bestMatchRoleId}]`);
-        console.groupEnd();
+        if (bestRoleId) {
+            await assignRole(memberId, bestRoleId);
+        }
+    };
 
-        setRecommendedRoleId(bestMatchRoleId);
-    }, [requests, roles]);
+    const calculateRecommendation = (memberId: string) => {
+        const member = unassignedMembers.find(m => m.id === memberId);
+        if (!member) return;
+
+        let bestRoleId: string | null = null;
+        let bestScore = 0;
+
+        roles.forEach(role => {
+            let score = 0;
+
+            role.required_skills?.forEach((skill: string) => {
+                if (member.skills?.includes(skill)) {
+                    score++;
+                }
+            });
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestRoleId = role.id;
+            }
+        });
+
+        setRecommendedRoleId(bestRoleId);
+    };
 
     const resetRecommendation = useCallback(() => {
         setRecommendedRoleId(null);
     }, []);
 
     const handleDeleteRole = async (roleId: string | number) => {
-        // UX: Gunakan confirm untuk keamanan
-        if (!confirm("Are you sure? Removing this role will unassign all current members.")) return;
-
         try {
             const token = Cookies.get("token");
+            // Gunakan URL yang sesuai dengan api.php
             const res = await fetch(`${API_BASE_URL}/delete-roles/${roleId}`, {
                 method: "DELETE",
                 headers: {
@@ -340,37 +370,40 @@ export function useTeamManagement(teamId: string) {
 
             const result = await res.json();
             if (result.success) {
-                toast({ title: "🗑️ Role Deleted", description: "The role has been successfully removed." });
-                // Refresh data pendaftar dan data tim
-                await Promise.all([fetchManagementData(), fetchRequests()]);
+                toast({ title: "🗑️ Role Dihapus" });
+                // Refresh data tim agar RoleCard hilang dari layar
+                await fetchManagementData();
             }
         } catch (error) {
-            toast({ title: "Error", description: "Failed to delete role.", variant: "destructive" });
+            toast({ title: "Gagal menghapus role", variant: "destructive" });
         }
     };
 
-    const handleRemoveMember = async (tId: string, uId: string | number) => {
-        if (!confirm("Keluarkan member ini dari tim?")) return;
-
+    const handleRemoveMember = async (tId: string | number, uId: string | number) => {
         try {
             const token = Cookies.get("token");
             const res = await fetch(`${API_BASE_URL}/teams/${tId}/members/${uId}`, {
                 method: "DELETE",
-                headers: { "Authorization": `Bearer ${token}` }
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/json"
+                }
             });
 
-            if (res.ok) {
-                toast({ title: "Berhasil", description: "Member telah dikeluarkan." });
-                // REFRESH DATA AGAR AHMAD MUNCUL LAGI DI LIST REQUEST
-                await Promise.all([fetchManagementData(), fetchRequests()]);
+            const result = await res.json();
+            if (result.success) {
+                toast({ title: "Berhasil", description: "Member dikembalikan ke Waiting List." });
+                await fetchManagementData(); // Ini akan memindahkan user dari Role Card ke Waiting List
+                return true;
             }
         } catch (error) {
             toast({ title: "Gagal", variant: "destructive" });
         }
+        return false;
     };
 
     return {
-        isLoading, teamData, roles, requests, recommendedRoleId,
-        handleAccept, handleReject, handleSaveRole, handleRemoveMember, handleDeleteRole, fetchManagementData, fetchRequests, autoAssignRole, calculateRecommendation, resetRecommendation, handleAddRoleApi
+        isLoading, teamData, roles, requests, recommendedRoleId, isDirty, unassignedMembers,
+        handleAccept, handleFinalize, handleReject, handleSaveRole, handleRemoveMember, handleDeleteRole, fetchManagementData, fetchRequests, autoAssignRole, calculateRecommendation, resetRecommendation, handleAddRoleApi
     };
 }

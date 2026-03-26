@@ -1,122 +1,136 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X, Plus, AlertCircle, Crown } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { X, Plus, Users2, ShieldCheck, Briefcase } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useState } from "react";
 
-export default function RolesStep({
-    // Tambahkan props leaderRole di sini
-    leaderRole, setLeaderRole,
-    roles, removeRole, removeSkill, editingRoleIndex,
-    setEditingRoleIndex, newSkill, setNewSkill, addSkillToRole,
-    newRole, setNewRole, addRole
+export default function RolesStep({ 
+  roles, addRole, updateRoleField, removeRole, 
+  leaderRole, setLeaderRole, errors 
 }: any) {
-    return (
-        <div className="space-y-8">
-            {/* --- SECTION 1: LEADER'S ROLE (Ketik Sendiri) --- */}
-            <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                    <Crown className="h-4 w-4 text-[#5A8D39]" />
-                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">Your Role (Leader)</h3>
-                </div>
-                <div className="rounded-[1.5rem] border-2 border-[#5A8D39] bg-white p-5">
-                    <p className="text-[11px] font-bold text-slate-400 uppercase mb-3 tracking-tight">
-                        What is your specific responsibility in this team?
-                    </p>
-                    <Input
-                        placeholder="e.g. Fullstack Developer / Project Manager"
-                        value={leaderRole}
-                        onChange={(e) => setLeaderRole(e.target.value)}
-                        className="rounded-xl border-slate-200 text-slate-900 font-bold placeholder:text-slate-300 focus-visible:ring-[#5A8D39]"
-                    />
-                    {!leaderRole && (
-                        <p className="mt-2 text-[10px] text-amber-600 font-bold flex items-center gap-1 italic">
-                            <AlertCircle className="h-3 w-3" /> This field is required for the team to be valid.
-                        </p>
-                    )}
-                </div>
-            </div>
+  const [skillInputs, setSkillInputs] = useState<Record<number, string>>({});
 
-            <hr className="border-slate-100" />
-
-            {/* --- SECTION 2: OPEN ROLES (Untuk Member Lain) --- */}
-            <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                    <Plus className="h-4 w-4 text-slate-400" />
-                    <h3 className="text-sm font-black text-slate-400 uppercase tracking-wider">Open Positions</h3>
-                </div>
-
-                <div className="space-y-4">
-                    {roles.map((role: any, i: number) => (
-                        <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 transition-all">
-                            <div className="flex items-center justify-between mb-3">
-                                <h4 className="font-bold text-slate-900">{role.role}</h4>
-                                <button onClick={() => removeRole(i)} className="text-slate-300 hover:text-red-500 transition-colors cursor-pointer">
-                                    <X className="h-4 w-4" />
-                                </button>
-                            </div>
-
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                {role.skills.map((skill: string, si: number) => (
-                                    <Badge key={si} variant="secondary" className="rounded-xl px-3 py-1 gap-1 items-center">
-                                        {skill}
-                                        <button onClick={() => removeSkill(i, si)} className="cursor-pointer hover:text-red-500">
-                                            <X className="h-3 w-3" />
-                                        </button>
-                                    </Badge>
-                                ))}
-                            </div>
-
-                            {editingRoleIndex === i ? (
-                                <div className="flex gap-2 mt-3 animate-in fade-in slide-in-from-top-1">
-                                    <Input
-                                        placeholder="Add required skill..."
-                                        value={newSkill}
-                                        onChange={(e) => setNewSkill(e.target.value)}
-                                        onKeyDown={(e) => e.key === "Enter" && addSkillToRole(i)}
-                                        className="rounded-xl border-slate-200 text-slate-900 text-sm"
-                                    />
-                                    <Button
-                                        onClick={() => addSkillToRole(i)}
-                                        className="rounded-xl bg-[#5A8D39] hover:bg-[#4a752f] text-white px-4 font-bold"
-                                    >
-                                        Add
-                                    </Button>
-                                </div>
-                            ) : (
-                                <button
-                                    onClick={() => setEditingRoleIndex(i)}
-                                    className="mt-2 text-xs font-bold text-[#5A8D39] hover:underline flex items-center gap-1"
-                                >
-                                    <Plus className="h-3 w-3" /> Add skills
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                {roles.length === 0 && (
-                    <div className="flex items-center gap-3 text-sm text-amber-600 bg-amber-50 p-4 rounded-2xl border border-amber-100 font-medium italic">
-                        <AlertCircle className="h-5 w-5 shrink-0" />
-                        <p>Add roles you need from other students (e.g. Designer).</p>
-                    </div>
-                )}
-
-                {/* Input untuk tambah role baru */}
-                <div className="flex gap-2 p-2 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-                    <Input
-                        placeholder="Role Name (e.g. Backend Dev)"
-                        value={newRole}
-                        onChange={(e) => setNewRole(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && addRole()}
-                        className="border-none bg-transparent focus-visible:ring-0 text-slate-900 font-bold"
-                    />
-                    <Button variant="ghost" onClick={addRole} className="rounded-xl text-[#5A8D39] font-black hover:bg-white">
-                        <Plus className="h-4 w-4 mr-1" /> Add Role
-                    </Button>
-                </div>
-            </div>
+  return (
+    <div className="space-y-8">
+      {/* HEADER SECTION */}
+      <div className="flex items-start gap-4 mb-10">
+        <div className="p-3 bg-green-50 rounded-2xl">
+          <Users2 className="h-6 w-6 text-[#5A8D39]" />
         </div>
-    );
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">Kebutuhan Role</h2>
+          <p className="text-sm text-slate-500 font-medium tracking-tight">
+            Definisikan posisi yang kamu butuhkan di tim
+          </p>
+        </div>
+      </div>
+
+      {/* LEADER ROLE SECTION */}
+      <div className="p-6 border-2 border-[#5A8D39]/20 rounded-[1.5rem] bg-white shadow-sm ring-1 ring-[#5A8D39]/5">
+        <div className="flex items-center gap-2 mb-4">
+          <ShieldCheck className="h-4 w-4 text-[#5A8D39]" />
+          <label className="text-[11px] font-black text-[#5A8D39] uppercase tracking-[0.2em]">Peran Kamu (Leader)</label>
+        </div>
+        <Input 
+          value={leaderRole}
+          onChange={(e) => setLeaderRole(e.target.value)}
+          placeholder="Contoh: Project Manager / Fullstack Dev"
+          className="rounded-xl border-slate-300 bg-slate-50/30 h-12 font-bold text-slate-900 focus-visible:ring-[#5A8D39]"
+        />
+      </div>
+
+      <div className="flex items-center gap-2 pt-6 pb-2 border-b border-slate-100">
+        <Briefcase className="h-4 w-4 text-slate-500" />
+        <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">Posisi yang Dicari</h3>
+      </div>
+
+      {/* DYNAMIC ROLES LIST */}
+      <div className="space-y-8">
+        {roles.map((role: any, index: number) => (
+          <div key={index} className="relative p-7 border border-slate-200 rounded-2xl bg-white shadow-sm animate-in zoom-in-95 hover:border-[#5A8D39]/30 transition-colors">
+            <button 
+              type="button"
+              onClick={() => removeRole(index)} 
+              className="absolute top-3 right-6 text-slate-500 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-full transition-all"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            
+            <div className="space-y-6">
+              {/* Nama Role */}
+              <div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4.5 block">Nama Role</label>
+                <Input 
+                  value={role.role_name}
+                  onChange={(e) => updateRoleField(index, "role_name", e.target.value)}
+                  placeholder="e.g. Frontend Developer"
+                  className="rounded-xl bg-slate-50/50 border-slate-300 h-12 font-bold focus-visible:ring-[#5A8D39]"
+                />
+              </div>
+
+              {/* Tanggung Jawab */}
+              <div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block">Tanggung Jawab</label>
+                <Textarea 
+                  value={role.description}
+                  onChange={(e) => updateRoleField(index, "description", e.target.value)}
+                  placeholder="Contoh: Merancang arsitektur API dan mengelola database..."
+                  className="rounded-xl bg-slate-50/50 border-slate-300 min-h-[100px] leading-relaxed focus-visible:ring-[#5A8D39]"
+                />
+              </div>
+
+              {/* Skills */}
+              <div>
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5 block">Skill yang Dibutuhkan</label>
+                <div className="flex gap-2">
+                  <Input 
+                    value={skillInputs[index] || ""}
+                    onChange={(e) => setSkillInputs({...skillInputs, [index]: e.target.value})}
+                    onKeyDown={(e) => {
+                      if(e.key === 'Enter') {
+                        e.preventDefault();
+                        const currentSkills = role.skills || [];
+                        if (skillInputs[index]?.trim()) {
+                           updateRoleField(index, "skills", [...currentSkills, skillInputs[index].trim()]);
+                           setSkillInputs({...skillInputs, [index]: ""});
+                        }
+                      }
+                    }}
+                    placeholder="Ketik skill lalu Enter..."
+                    className="rounded-xl bg-slate-50/50 border-slate-300 h-12"
+                  />
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {(role.skills || []).map((s: string, sIdx: number) => (
+                    <Badge key={sIdx} className="bg-slate-100 text-slate-600 hover:bg-red-50 hover:text-red-600 border-none px-3 py-1.5 rounded-lg font-bold transition-all group">
+                      {s} 
+                      <X className="h-3 w-3 ml-2 cursor-pointer transition-transform group-hover:scale-110" onClick={() => {
+                        const filtered = role.skills.filter((_: any, i: number) => i !== sIdx);
+                        updateRoleField(index, "skills", filtered);
+                      }} />
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ADD ROLE BUTTON */}
+      <Button 
+        type="button"
+        onClick={addRole}
+        variant="outline" 
+        className="w-full py-12 border-dashed border-2 rounded-[2rem] bg-slate-50/30 text-slate-400 hover:text-[#5A8D39] hover:border-[#5A8D39] hover:bg-white transition-all font-bold flex flex-col gap-2 group"
+      >
+        <Plus className="h-6 w-6 group-hover:scale-110 transition-transform" /> 
+        <span>Tambah Role yang Dibutuhkan</span>
+      </Button>
+    </div>
+  );
 }

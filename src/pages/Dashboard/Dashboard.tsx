@@ -2,11 +2,12 @@
 
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, Users, Trophy, Clock, Crown, Shield, Rocket, Check, X } from "lucide-react";
+import { Bell, Users, Trophy, Clock, Crown, Shield, Rocket, Check, X, Loader2 } from "lucide-react"; // Tambah Loader2
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import NotificationItem from "@/components/dashboard/NotificationItem";
 
 import StatCards from "@/components/dashboard/StatCards";
 import RequestItem from "@/components/dashboard/RequestItem";
@@ -15,22 +16,29 @@ import RemoveMemberDialog from "@/components/dashboard/RemoveMemberDialog";
 import MemberProfileDrawer from "@/components/MemberProfileDrawer";
 
 import { useDashboard } from "@/hooks/use-dashboard";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
+  const { toast } = useToast();
   const {
     managedTeams,
     joinedTeams,
-    requests, // Orang yang minta gabung ke tim Arvia
-    invitations, // Tim orang lain yang mengundang Arvia
+    requests,
+    invitations,
+    notifications,
     isLoading,
     expandedTeam,
+    markAsRead,
     setExpandedTeam,
     handleApprove,
     handleDecline,
     handleRemoveMember,
-    handleAcceptInvite, // Fungsi baru untuk terima undangan
-    handleRejectInvite, // Fungsi baru untuk tolak undangan
+    handleAcceptInvite,
+    handleRejectInvite,
   } = useDashboard();
+
+  // --- STATE BARU UNTUK LOADING BUTTON ---
+  const [processingId, setProcessingId] = useState<number | null>(null);
 
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -41,31 +49,35 @@ export default function Dashboard() {
 
   // Statistik Dashboard
   const statData = useMemo(() => [
-    { 
-      icon: Users, 
-      label: "Active Teams", 
-      value: String(managedTeams.length + joinedTeams.length), 
-      color: "text-[#5A8D39]" 
-    },
-    { 
-      icon: Bell, 
-      label: "Invites", 
-      value: String(invitations.length), 
-      color: "text-blue-500" 
-    },
-    { 
-      icon: Clock, 
-      label: "Join Requests", 
-      value: String(requests.length), 
-      color: "text-amber-500" 
-    },
-    { 
-      icon: Trophy, 
-      label: "Achievements", 
-      value: String(joinedTeams.filter(t => t.status === 'completed').length), 
-      color: "text-indigo-500" 
-    },
+    { icon: Users, label: "Active Teams", value: String(managedTeams.length + joinedTeams.length), color: "text-[#5A8D39]" },
+    { icon: Bell, label: "Invites", value: String(invitations.length), color: "text-blue-500" },
+    { icon: Clock, label: "Join Requests", value: String(requests.length), color: "text-amber-500" },
+    { icon: Trophy, label: "Achievements", value: String(joinedTeams.filter(t => t.status === 'completed').length), color: "text-indigo-500" },
   ], [managedTeams.length, joinedTeams.length, requests.length, invitations.length]);
+
+  const onAcceptInvite = async (invite: any) => {
+    setProcessingId(invite.id); // Mulai Loading
+    const success = await handleAcceptInvite(invite.id);
+    if (success) {
+      toast({
+        title: "Undangan Diterima! 🎉",
+        description: `Kamu telah resmi bergabung dengan tim ${invite.team_name}.`,
+      });
+    }
+    setProcessingId(null); // Matikan Loading
+  };
+
+  const onRejectInvite = async (invite: any) => {
+    setProcessingId(invite.id); // Mulai Loading
+    const success = await handleRejectInvite(invite.id);
+    if (success) {
+      toast({
+        title: "Undangan Ditolak",
+        description: `Undangan dari ${invite.leader_name} telah dihapus.`,
+      });
+    }
+    setProcessingId(null); // Matikan Loading
+  };
 
   if (isLoading) {
     return (
@@ -81,46 +93,39 @@ export default function Dashboard() {
   return (
     <div className="w-full min-h-screen bg-slate-50/50">
       <div className="container mx-auto max-w-5xl px-4 py-12">
-
-        {/* Header Section */}
         <header className="mb-10 space-y-2">
           <h1 className="text-4xl font-black text-slate-900 tracking-tight">Dashboard</h1>
-          <p className="text-slate-500 font-medium">
-            Kelola tim, respon undangan, dan pantau perkembangan kompetisimu.
-          </p>
+          <p className="text-slate-500 font-medium">Kelola tim, respon undangan, dan pantau perkembangan kompetisimu.</p>
         </header>
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-
           <StatCards stats={statData} />
 
           <div className="grid gap-8 lg:grid-cols-3 mt-10">
-
-            {/* LEFT COLUMN: Manage & Invites */}
             <div className="lg:col-span-2 space-y-8">
-              <Tabs defaultValue="invitations" className="w-full">
+              <Tabs defaultValue="invitations" className="w-full" onValueChange={(value) => {
+                if (value === "notifications") {
+                  markAsRead(); // Panggil fungsi saat tab diklik
+                }
+              }}>
                 <TabsList className="bg-slate-100 p-1 rounded-xl mb-6 flex overflow-x-auto scrollbar-hide">
                   <TabsTrigger value="invitations" className="rounded-lg gap-2 font-bold px-6">
                     <Bell className="h-4 w-4" />
-                    Team Invites
-                    {invitations.length > 0 && (
-                      <Badge className="ml-1 bg-[#5A8D39] text-white border-none h-5 w-5 p-0 flex items-center justify-center rounded-full text-[10px]">
-                        {invitations.length}
-                      </Badge>
-                    )}
+                    Invites {invitations.length > 0 && <Badge className="ml-1 bg-[#5A8D39] text-white h-5 w-5 p-0 flex items-center justify-center rounded-full text-[10px]">{invitations.length}</Badge>}
                   </TabsTrigger>
                   <TabsTrigger value="requests" className="rounded-lg gap-2 font-bold px-6">
                     <Users className="h-4 w-4" />
-                    Join Requests
-                    {requests.length > 0 && (
-                      <Badge className="ml-1 bg-amber-500 text-white border-none h-5 w-5 p-0 flex items-center justify-center rounded-full text-[10px]">
-                        {requests.length}
-                      </Badge>
+                    Join Requests {requests.length > 0 && <Badge className="ml-1 bg-amber-500 text-white h-5 w-5 p-0 flex items-center justify-center rounded-full text-[10px]">{requests.length}</Badge>}
+                  </TabsTrigger>
+                  <TabsTrigger value="notifications" className="rounded-lg gap-2 font-bold px-6">
+                    <Bell className="h-4 w-4" />
+                    Activity Log
+                    {notifications.some((n: any) => !n.read_at) && (
+                      <div className="ml-1.5 h-2 w-2 rounded-full bg-red-500 animate-pulse" />
                     )}
                   </TabsTrigger>
                 </TabsList>
 
-                {/* Tab Content: Team Invites (Undangan untuk Arvia) */}
                 <TabsContent value="invitations" className="space-y-4 outline-none">
                   <AnimatePresence mode="popLayout">
                     {invitations.length === 0 ? (
@@ -143,26 +148,28 @@ export default function Dashboard() {
                             </div>
                             <div>
                               <p className="font-black text-slate-900">{invite.team_name}</p>
-                              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">
-                                Invited by {invite.leader_name}
-                              </p>
+                              <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Invited by {invite.leader_name}</p>
                             </div>
                           </div>
                           <div className="flex gap-2 w-full sm:w-auto">
-                            <Button 
-                              variant="ghost" 
+                            <Button
+                              variant="ghost"
                               size="sm"
+                              disabled={processingId === invite.id}
                               className="flex-1 sm:flex-none font-bold text-slate-400 hover:text-red-500 rounded-xl"
-                              onClick={() => handleRejectInvite(invite.id)}
+                              onClick={() => onRejectInvite(invite)}
                             >
-                              <X className="h-4 w-4 mr-1" /> Tolak
+                              {processingId === invite.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <X className="h-4 w-4 mr-1" />}
+                              Tolak
                             </Button>
-                            <Button 
+                            <Button
                               size="sm"
-                              className="flex-1 sm:flex-none bg-[#5A8D39] hover:bg-[#4a752f] text-white font-bold px-6 rounded-xl shadow-lg shadow-green-100"
-                              onClick={() => handleAcceptInvite(invite.id)}
+                              disabled={processingId === invite.id}
+                              className="flex-1 sm:flex-none bg-[#5A8D39] hover:bg-[#4a752f] text-white font-bold px-6 rounded-xl shadow-lg"
+                              onClick={() => onAcceptInvite(invite)}
                             >
-                              <Check className="h-4 w-4 mr-1" /> Terima
+                              {processingId === invite.id ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <Check className="h-4 w-4 mr-1" />}
+                              {processingId === invite.id ? "Memproses..." : "Terima"}
                             </Button>
                           </div>
                         </motion.div>
@@ -171,7 +178,7 @@ export default function Dashboard() {
                   </AnimatePresence>
                 </TabsContent>
 
-                {/* Tab Content: Join Requests (Orang minta gabung ke tim Arvia) */}
+                {/* Content untuk Requests dan Notifications tetap sama seperti sebelumnya */}
                 <TabsContent value="requests" className="space-y-4 outline-none">
                   <AnimatePresence mode="popLayout">
                     {requests.length === 0 ? (
@@ -181,12 +188,34 @@ export default function Dashboard() {
                       </div>
                     ) : (
                       requests.map((req) => (
-                        <RequestItem
-                          key={req.id}
-                          req={req}
-                          onApprove={() => handleApprove(req)}
-                          onDecline={() => handleDecline(req.id)}
-                          onViewProfile={(r: any) => { setSelectedMember(r); setDrawerOpen(true); }}
+                        <RequestItem key={req.id} req={req} onApprove={() => handleApprove(req)} onDecline={() => handleDecline(req.id)} onViewProfile={(r: any) => { setSelectedMember(r); setDrawerOpen(true); }} />
+                      ))
+                    )}
+                  </AnimatePresence>
+                </TabsContent>
+
+                <TabsContent value="notifications" className="space-y-3 outline-none">
+                  <AnimatePresence mode="popLayout">
+                    {!Array.isArray(notifications) || notifications.length === 0 ? (
+                      <div className="rounded-[2rem] border-2 border-dashed border-slate-200 bg-white/50 p-12 text-center">
+                        <Bell className="mx-auto h-12 w-12 text-slate-200" />
+                        <p className="mt-4 font-bold text-slate-400">Belum ada riwayat aktivitas</p>
+                      </div>
+                    ) : (
+                      notifications.map((notif: any) => (
+                        <NotificationItem
+                          key={notif.id}
+                          notif={{
+                            id: notif.id,
+                            message: notif.data?.message || "Pesan tidak tersedia",
+                            type: notif.data?.type || "info",
+                            // FORMAT BARU: Tanggal NamaBulan Tahun, Jam.Menit
+                            time: new Date(notif.created_at).toLocaleDateString('id-ID', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                            }) + `, ${new Date(notif.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`
+                          }}
                         />
                       ))
                     )}
@@ -194,47 +223,68 @@ export default function Dashboard() {
                 </TabsContent>
               </Tabs>
 
-              {/* SECTION: MANAGED TEAMS */}
+              {/* Managed & Joined Teams Section tetap sama */}
               <section className="pt-4">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-black text-slate-900 flex items-center gap-3">
-                    <div className="p-2 bg-amber-100 rounded-lg"><Crown className="h-5 w-5 text-amber-600" /></div>
+                    <div className="p-2 bg-amber-100 rounded-lg">
+                      <Crown className="h-5 w-5 text-amber-600" />
+                    </div>
                     My Managed Teams
                   </h2>
                   <Badge variant="outline" className="rounded-full border-slate-200 text-slate-400 font-bold">
                     {managedTeams.length} Teams
                   </Badge>
                 </div>
+
                 <div className="grid gap-4">
                   {managedTeams.map((team) => (
                     <TeamAccordion
                       key={team.id}
-                      team={team}
+                      team={{
+                        ...team,
+                        // Fallback agar slot members tidak kosong:
+                        display_count: team.member_count ?? team.members?.length ?? 0,
+                        display_max: team.max_members ?? team.total ?? 0
+                      }}
                       isOwner={true}
                       isExpanded={expandedTeam === `managed-${team.id}`}
                       onToggle={() => setExpandedTeam(expandedTeam === `managed-${team.id}` ? null : `managed-${team.id}`)}
                       onRemoveTrigger={(tName: string, mName: string) => setRemoveMember({ teamName: tName, memberName: mName })}
                     />
                   ))}
+                  {managedTeams.length === 0 && (
+                    <div className="p-8 text-center rounded-[2rem] bg-slate-100/50 border border-slate-100 border-dashed">
+                      <p className="text-sm font-medium text-slate-400 italic">Kamu belum membuat tim manapun.</p>
+                    </div>
+                  )}
                 </div>
               </section>
 
-              {/* SECTION: JOINED TEAMS */}
+              {/* 2. SECTION: TEAMS I JOINED (Tim yang kamu ikuti) */}
               <section className="pt-4 pb-12">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-black text-slate-900 flex items-center gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg"><Shield className="h-5 w-5 text-blue-600" /></div>
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Shield className="h-5 w-5 text-blue-600" />
+                    </div>
                     Teams I Joined
                   </h2>
                   <Badge variant="outline" className="rounded-full border-slate-200 text-slate-400 font-bold">
                     {joinedTeams.length} Teams
                   </Badge>
                 </div>
+
                 <div className="grid gap-4">
                   {joinedTeams.map((team) => (
                     <TeamAccordion
                       key={team.id}
-                      team={team}
+                      team={{
+                        ...team,
+                        // Fallback agar slot members tidak kosong:
+                        display_count: team.member_count ?? team.members?.length ?? 0,
+                        display_max: team.max_members ?? team.total ?? 0
+                      }}
                       isOwner={false}
                       isExpanded={expandedTeam === `joined-${team.id}`}
                       onToggle={() => setExpandedTeam(expandedTeam === `joined-${team.id}` ? null : `joined-${team.id}`)}
@@ -249,17 +299,13 @@ export default function Dashboard() {
               </section>
             </div>
 
-            {/* RIGHT COLUMN: Info Card */}
+            {/* Right Column (Info Card) tetap sama */}
             <div className="hidden lg:block space-y-6">
               <div className="rounded-[2rem] bg-[#5A8D39] p-8 text-white shadow-xl shadow-green-100 sticky top-8">
                 <h3 className="text-lg font-black mb-2">Ready to Win?</h3>
-                <p className="text-sm opacity-90 leading-relaxed mb-6">
-                  Cek undangan tim kamu secara berkala agar tidak melewatkan kesempatan kolaborasi hebat!
-                </p>
+                <p className="text-sm opacity-90 leading-relaxed mb-6">Cek undangan tim kamu secara berkala agar tidak melewatkan kesempatan kolaborasi hebat!</p>
                 <div className="bg-white/20 rounded-2xl p-4 flex items-center gap-4">
-                  <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#5A8D39]">
-                    <Trophy className="h-5 w-5" />
-                  </div>
+                  <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#5A8D39]"><Trophy className="h-5 w-5" /></div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest opacity-70">Next Step</p>
                     <p className="text-sm font-bold truncate">Accept your invitations!</p>
@@ -272,22 +318,8 @@ export default function Dashboard() {
         </motion.div>
       </div>
 
-      {/* MODALS & DRAWERS */}
-      <RemoveMemberDialog
-        data={removeMember}
-        onConfirm={() => {
-          if (removeMember) {
-            handleRemoveMember(removeMember.teamName, removeMember.memberName);
-          }
-        }}
-        onClose={() => setRemoveMember(null)}
-      />
-
-      <MemberProfileDrawer
-        member={selectedMember}
-        open={drawerOpen}
-        onOpenChange={setDrawerOpen}
-      />
+      <RemoveMemberDialog data={removeMember} onConfirm={() => { if (removeMember) { handleRemoveMember(removeMember.teamName, removeMember.memberName); } }} onClose={() => setRemoveMember(null)} />
+      <MemberProfileDrawer member={selectedMember} open={drawerOpen} onOpenChange={setDrawerOpen} />
     </div>
   );
 }

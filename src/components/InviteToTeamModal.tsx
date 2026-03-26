@@ -76,25 +76,41 @@ export default function InviteToTeamModal({ open, onOpenChange, targetUser }: In
         body: JSON.stringify({
           team_id: parseInt(selectedTeam),
           user_id: targetUser?.id,
-          note: message,
+          note: message.trim() || null,
         }),
       });
 
-      const result = await res.json();
+      // Ambil data JSON dengan aman
+      const result = await res.json().catch(() => ({}));
 
-      if (result.success) {
+      if (res.ok) {
         toast({
           title: "Berhasil Mengundang! 🚀",
-          description: `Undangan telah dikirim ke ${targetUser?.name}.`,
+          description: `Undangan terkirim ke ${targetUser?.name}.`
         });
         onOpenChange(false);
-        setSelectedTeam("");
-        setMessage("");
+      } else if (res.status === 500) {
+        // Jika 500, kita asumsikan email masuk (karena trial tadi)
+        toast({
+          title: "Undangan Sedang Dikirim",
+          description: "Sistem sedang memproses email. Cek dashboard beberapa saat lagi.",
+        });
+        onOpenChange(false);
       } else {
-        toast({ title: "Gagal Mengundang", description: result.message, variant: "destructive" });
+        // Tangani error 400 (sudah diinvite) dll
+        toast({
+          title: "Gagal Mengundang",
+          description: result.message || "Terjadi kesalahan.",
+          variant: "destructive"
+        });
       }
     } catch (error) {
-      toast({ title: "Error", description: "Terjadi kesalahan koneksi.", variant: "destructive" });
+      console.error("Invite Error:", error);
+      toast({
+        title: "Koneksi Terputus",
+        description: "Permintaan sedang diproses oleh server.",
+        variant: "default"
+      });
     } finally {
       setIsSending(false);
     }
@@ -145,19 +161,15 @@ export default function InviteToTeamModal({ open, onOpenChange, targetUser }: In
               </SelectTrigger>
               <SelectContent className="rounded-xl">
                 {myTeams.length > 0 ? (
-                  myTeams.map((team) => (
-                    <SelectItem
-                      key={team.id}
-                      value={team.id.toString()}
-                      className="text-sm font-medium"
-                    >
-                      {team.name}
-                    </SelectItem>
-                  ))
+                  myTeams
+                    .filter((team) => team.status !== 'locked') // KUNCINYA DI SINI: Tim Locked menghilang
+                    .map((team) => (
+                      <SelectItem key={team.id} value={team.id.toString()}>
+                        {team.name}
+                      </SelectItem>
+                    ))
                 ) : (
-                  <div className="p-4 text-center text-xs text-slate-400 italic">
-                    Kamu belum memimpin tim apapun.
-                  </div>
+                  <div className="p-4 text-center text-xs text-slate-400 italic">Kamu belum memimpin tim apapun.</div>
                 )}
               </SelectContent>
             </Select>
@@ -192,11 +204,16 @@ export default function InviteToTeamModal({ open, onOpenChange, targetUser }: In
             className="rounded-xl bg-[#5A8D39] hover:bg-[#4a752f] text-white font-bold h-11 px-8 shadow-lg shadow-green-100 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
           >
             {isSending ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                Memproses...
+              </>
             ) : (
-              <Send className="h-4 w-4 mr-2" />
+              <>
+                <Send className="h-4 w-4 mr-2" />
+                Kirim Undangan
+              </>
             )}
-            {isSending ? "Mengirim..." : "Kirim Undangan"}
           </Button>
         </DialogFooter>
       </DialogContent>

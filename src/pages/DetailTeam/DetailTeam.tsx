@@ -17,6 +17,7 @@ import QuickInfo from "@/components/detail-team/QuickInfo";
 import TeamResources from "@/components/detail-team/TeamResources";
 import MemberProfileDrawer from "@/components/MemberProfileDrawer";
 import JoinTeamModal from "@/components/JoinTeamModal";
+import { Button } from "@/components/ui/button";
 
 export default function DetailTeamPage() {
   const params = useParams<{ id: string }>();
@@ -45,23 +46,24 @@ export default function DetailTeamPage() {
 
         if (result.success) {
           const raw = result.data;
-          
+
           const formattedTeam = {
             ...raw,
             title: raw.name || "Untitled Team",
             campus: raw.leader?.institution || "General Institution",
-            // Mapping All Members agar sesuai dengan Interface MemberProfile di Drawer kamu
+            totalAccepted: (raw.users?.filter((u: any) => u.pivot?.status === 'accepted').length || 0) + 1,
+            slotsDisplay: `${(raw.users?.filter((u: any) => u.pivot?.status === 'accepted').length || 0) + (raw.leader ? 1 : 0)}/${raw.max_members || 0}`,
             allMembers: [
               ...(raw.leader ? [{
                 id: raw.leader.id,
                 name: raw.leader.name,
                 initials: raw.leader.name?.substring(0, 2).toUpperCase(),
-                role: "Team Leader",
+                role: raw.leader_role_name || "Team Leader",
                 major: raw.leader.major || "Informatics Engineering",
                 skills: raw.leader.skills?.map((s: any) => s.skill_name) || [],
                 portfolio: raw.leader.portfolio_url || null,
                 isLeader: true,
-                avatar: raw.leader.avatar
+                avatar: raw.leader.avatar,
               }] : []),
               ...(raw.users || [])
                 .filter((u: any) => u.pivot?.status === "accepted" && u.id !== raw.leader_id)
@@ -127,80 +129,159 @@ export default function DetailTeamPage() {
   if (!team) return <div className="text-center py-20 font-bold text-slate-400 uppercase">Team Not Found</div>;
 
   return (
-    <div className="container mx-auto max-w-4xl px-4 py-8 min-h-screen">
-      <Link href="/explore" className="inline-flex items-center gap-2 text-[11px] font-black text-slate-400 hover:text-[#5A8D39] mb-6 tracking-widest transition-colors">
-        <ArrowLeft className="h-3.5 w-3.5" /> BACK TO EXPLORE
+    <div className="container mx-auto max-w-6xl px-4 py-8 min-h-screen">
+      {/* BREADCRUMB / BACK BUTTON */}
+      <Link href="/explore" className="inline-flex items-center gap-2 text-[11px] font-black text-slate-400 hover:text-[#5A8D39] mb-6 tracking-widest transition-colors uppercase">
+        <ArrowLeft className="h-3.5 w-3.5" /> Back to Explore
       </Link>
 
       <div className="grid gap-6">
-        <DetailTeamHeader 
-          detail={team} 
-          status={applicationStatus} 
-          onJoin={() => setJoinModalOpen(true)} 
+        {/* HEADER SECTION (Full Width) */}
+        <DetailTeamHeader
+          detail={team}
+          status={applicationStatus}
+          onJoin={() => setJoinModalOpen(true)}
         />
 
-        <div className="grid gap-6 md:grid-cols-3 items-start">
-          <div className="md:col-span-2 space-y-6">
-            <div className="rounded-2xl border border-slate-300 bg-white p-6 md:p-8">
-              <h2 className="text-[16px] font-bold mb-4 text-slate-900">About Project</h2>
-              <p className="text-slate-500 text-[13px] leading-relaxed whitespace-pre-line font-medium italic">
-                {team.description || team.headline}
-              </p>
+        {/* MAIN CONTENT GRID (2 Kolom) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
+          {/* KOLOM KIRI (Tentang & Objektif) - Col Span 2 */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="rounded-xl border border-slate-200 bg-white p-8 md:p-10 shadow-sm space-y-10">
+              {/* Section: Tentang Kompetisi */}
+              <section className="space-y-4">
+                <h3 className="text-[11px] font-black text-[#5A8D39] uppercase tracking-[0.2em]">
+                  Tentang Kompetisi
+                </h3>
+                <div className="text-slate-500 text-[14px] md:text-[15px] leading-relaxed font-medium">
+                  {team.description ? (
+                    <p className="whitespace-pre-line">{team.description}</p>
+                  ) : (
+                    <p className="italic text-slate-400">Tidak ada deskripsi kompetisi.</p>
+                  )}
+                </div>
+              </section>
+
+              {/* Section: Objektif Tim */}
+              <section className="space-y-6">
+                <h3 className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                  Objektif Tim
+                </h3>
+                <div className="space-y-4">
+                  {team.objectives && team.objectives.length > 0 ? (
+                    team.objectives.map((obj: string, index: number) => (
+                      <div key={index} className="flex items-start gap-4 group">
+                        <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-50 text-[#5A8D39] border border-green-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                        <span className="text-[14px] md:text-[15px] font-bold text-slate-700 leading-tight">
+                          {obj}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm font-bold text-slate-300 italic">- Belum ada objektif tim -</p>
+                  )}
+                </div>
+              </section>
             </div>
 
-            <div className="rounded-2xl border border-slate-300 bg-white p-6 md:p-8">
-              <h2 className="text-[16px] font-bold mb-6 text-slate-900">Open Roles</h2>
-              <div className="space-y-4">
+            {/* OPEN ROLES (Diletakkan di bawah About sesuai foto) */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-8 md:p-10 shadow-sm space-y-8">
+              <h3 className="text-[11px] font-black text-[#5A8D39] uppercase tracking-[0.2em]">
+                Posisi yang Dibutuhkan
+              </h3>
+
+              <div className="space-y-6">
                 {team.openRoles?.length > 0 ? team.openRoles.map((role: any) => (
-                  <div key={role.id} className="p-6 rounded-2xl border border-slate-400 bg-white space-y-3">
-                    <h3 className="font-bold text-slate-900 text-[15px]">{role.role}</h3>
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {role.skills?.map((skill: string, idx: number) => (
-                        <Badge 
-                          key={`${role.id}-${idx}`} 
-                          variant="secondary" 
-                          className="border-none text-[10px] font-medium px-3 py-0.5 rounded-full"
+                  <div key={role.id} className="group relative p-6 rounded-2xl border border-slate-100 bg-white hover:border-[#5A8D39]/30 transition-all shadow-sm">
+
+                    {/* Status Badge (Open) */}
+                    <div className="absolute top-6 right-6">
+                      <Badge className="bg-green-50 text-[#5A8D39] hover:bg-green-100 border-none text-[10px] font-black uppercase px-3 py-1 rounded-lg">
+                        Open
+                      </Badge>
+                    </div>
+
+                    <div className="flex flex-col gap-6">
+                      {/* Role Header */}
+                      <div className="flex items-start gap-4">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 group-hover:bg-green-50 group-hover:text-[#5A8D39] transition-colors">
+                          {/* Ikon dinamis sederhana, bisa disesuaikan nantinya */}
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="text-lg font-black text-slate-900 group-hover:text-[#5A8D39] transition-colors">
+                            {role.role}
+                          </h4>
+                          <p className="text-xs font-medium text-slate-500 leading-relaxed max-w-md">
+                            {role.description || "Bertanggung jawab atas pengembangan dan kolaborasi dalam tim untuk mencapai target kompetisi."}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Skills Row */}
+                      <div className="flex flex-wrap gap-2">
+                        {role.skills?.map((s: string, idx: number) => (
+                          <Badge key={idx} variant="secondary" className="text-[10px] font-bold px-3 py-2 border-none items-center">
+                            {s}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      {/* Action Button Per Role */}
+                      <div className="pt-2">
+                        <Button
+                          onClick={() => setJoinModalOpen(true)}
+                          className="h-11 rounded-xl bg-[#5A8D39] hover:bg-[#4a752f] text-white font-bold text-xs px-6 flex items-center gap-2 shadow-lg shadow-[#5A8D39]/20 transition-all active:scale-95"
                         >
-                          {skill}
-                        </Badge>
-                      ))}
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 rotate-[-15deg]"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+                          Lamar Posisi Ini
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )) : (
-                  <p className="text-xs font-bold text-slate-400 italic">No roles currently open.</p>
+                  <div className="py-10 text-center border-2 border-dashed border-slate-100 rounded-3xl">
+                    <p className="text-sm font-bold text-slate-300 italic">Belum ada posisi yang dibuka.</p>
+                  </div>
                 )}
               </div>
             </div>
-            <DetailTeamStats wins={team.memberWins || {}} achievements={team.achievements || []} />
           </div>
 
-          <aside className="space-y-6 sticky top-24">
-            <ListTalent 
-              members={team?.allMembers || []} 
-              onMemberClick={(m: any) => { 
-                setSelectedMember(m); 
-                setDrawerOpen(true); 
-              }} 
+          {/* KOLOM KANAN (Sidebar Aksi & Anggota) */}
+          <aside className="space-y-6 lg:sticky lg:top-8">
+            <QuickInfo
+              slots={team.totalAccepted}
+              maxMembers={team.max_members}
+              category={team.category}
+              campus={team.campus}
+              onJoin={() => setJoinModalOpen(true)}
+              status={applicationStatus}
+              deadline={team.deadline}
             />
-            <QuickInfo slots={team.slots} category={team.category} campus={team.campus} />
-            <TeamResources resourceLink={team.guidebook_url} resources={[]} />
+
+            <ListTalent
+              members={team?.allMembers || []}
+              onMemberClick={(m: any) => {
+                setSelectedMember(m);
+                setDrawerOpen(true);
+              }}
+            />
+
+            <TeamResources resourceLink={team.guidebook_url} />
           </aside>
+
         </div>
       </div>
 
-      <MemberProfileDrawer 
-        member={selectedMember} 
-        open={drawerOpen} 
-        onOpenChange={setDrawerOpen} 
-      />
-      
-      <JoinTeamModal 
-        open={joinModalOpen} 
-        onOpenChange={setJoinModalOpen} 
-        teamName={team.title} 
-        availableRoles={team.openRoles} 
-        onSubmit={handleJoinSubmit} 
-      />
+      {/* Modals & Drawers */}
+      <MemberProfileDrawer member={selectedMember} open={drawerOpen} onOpenChange={setDrawerOpen} />
+      <JoinTeamModal open={joinModalOpen} onOpenChange={setJoinModalOpen} teamName={team.title} availableRoles={team.openRoles} onSubmit={handleJoinSubmit} />
     </div>
   );
 }

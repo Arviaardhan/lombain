@@ -17,6 +17,7 @@ interface TeamOverviewCardProps {
     competition: string;
     category: string;
     deadline: string;
+    status?: string;
   };
   totalFilled: number;
   totalMax: number;

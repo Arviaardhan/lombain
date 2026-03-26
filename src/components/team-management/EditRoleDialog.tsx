@@ -24,10 +24,12 @@ export default function EditRoleDialog({ open, onOpenChange, role, onSave }: Edi
 
   useEffect(() => {
     if (role) {
+      const initialSkills = role.required_skills || role.skills || [];
+
       setFormData({
         role_name: role.role_name || "",
         max_slot: role.max_slot || 1,
-        skills: role.skills?.map((s: any) => typeof s === 'string' ? s : s.skill_name) || []
+        skills: initialSkills.map((s: any) => typeof s === 'string' ? s : s.skill_name)
       });
     } else {
       setFormData({ role_name: "", max_slot: 1, skills: [] });
