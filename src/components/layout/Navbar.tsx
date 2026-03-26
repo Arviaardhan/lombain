@@ -87,7 +87,7 @@ export default function Navbar() {
           <div className="hidden items-center gap-2 md:flex">
             {isLoggedIn ? (
               <>
-                <NotificationDropdown />
+                {/* <NotificationDropdown /> */}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -113,7 +113,7 @@ export default function Navbar() {
 
           {/* Mobile Toggle */}
           <div className="flex items-center gap-2 md:hidden">
-            {isLoggedIn && <NotificationDropdown />}
+            {isLoggedIn}
             <button
               className="p-2 rounded-lg hover:bg-muted"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

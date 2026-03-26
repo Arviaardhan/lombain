@@ -2,27 +2,29 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Crown, Shield, UserMinus, Edit2, Settings2, Users } from "lucide-react";
+import { ArrowRight, Crown, Shield, Edit2, Settings2, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Label } from "../ui/label";
 import Cookies from "js-cookie";
 
-export default function TeamAccordion({ team, isExpanded, onToggle, onRemoveTrigger, isOwner = false }: any) {
+export default function TeamAccordion({ team, isExpanded, onToggle, isOwner = false }: any) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  // Ambil ID user dari cookie saat komponen dimuat
   useEffect(() => {
-    const userCookie = Cookies.get("user"); // Sesuaikan dengan nama cookie/storage kamu
+    const userCookie = Cookies.get("user");
     if (userCookie) {
       const userData = JSON.parse(userCookie);
       setCurrentUserId(userData.id.toString());
     }
   }, []);
 
-  const sortedMembers = [...(team.members || [])].sort((a, b) => {
+  // Gabungkan Leader ke dalam list member jika belum ada (opsional untuk visual)
+  const allMembers = [...(team.users || [])];
+
+  const sortedMembers = allMembers.sort((a, b) => {
     const roleA = a.pivot?.role?.toLowerCase() || "";
     const roleB = b.pivot?.role?.toLowerCase() || "";
     if (roleA === 'leader') return -1;
@@ -44,9 +46,10 @@ export default function TeamAccordion({ team, isExpanded, onToggle, onRemoveTrig
             <p className="font-bold text-slate-900 leading-tight">{team.name}</p>
             <div className="flex items-center gap-2 mt-1">
               <Badge variant="outline" className="text-[10px] h-5 px-1.5 border-slate-200 text-slate-500 font-medium">
-                {team.member_count || team.filled}/{team.max_members || team.total} Members
+                {/* Menampilkan angka yang sudah +1 dari backend */}
+                {(team.member_count ?? 0)} / {(team.max_members ?? 0)} Members
               </Badge>
-              {isOwner && <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none text-[9px] h-5 px-1.5 font-bold uppercase tracking-wider">Owner</Badge>}
+              {isOwner && <Badge className="bg-amber-100 text-amber-700 border-none text-[9px] h-5 px-1.5 font-bold uppercase tracking-wider">Owner</Badge>}
             </div>
           </div>
         </div>
@@ -83,70 +86,64 @@ export default function TeamAccordion({ team, isExpanded, onToggle, onRemoveTrig
                 Current Members
               </Label>
 
-              {sortedMembers.length > 0 ? (
-                sortedMembers.map((member: any, index: number) => {
-                  const isLeader = member.pivot?.role?.toLowerCase() === 'leader';
-                  const isMe = member.id.toString() === currentUserId;
+              <div className="space-y-1">
+                {/* 1. SELALU tampilkan Leader di paling atas (baik untuk Owner maupun Joined Team) */}
+                {team.leader && (
+                  <div className="flex items-center justify-between py-4 border-b border-slate-100">
+                    <div className="flex items-center gap-4">
+                      <Avatar className="h-12 w-12 border-none">
+                        <AvatarImage src={team.leader.avatar} />
+                        <AvatarFallback className="bg-[#5A8D39]/10 text-[#5A8D39] text-sm font-bold">
+                          {team.leader.name?.substring(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="space-y-1">
+                        <p className="text-base font-bold text-slate-900">
+                          {team.leader.id.toString() === currentUserId ? `You (${team.leader.name})` : team.leader.name}
+                        </p>
+                        <Badge className="h-6 px-2 gap-1.5 rounded-full border-[#5A8D39]/30 bg-[#5A8D39]/5 text-[#5A8D39] font-bold text-[9px] uppercase tracking-wide">
+                          <Crown className="h-3 w-3" /> Team Leader
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-                  return (
-                    <div
-                      key={member.id}
-                      className={`flex items-center justify-between py-4 ${index !== sortedMembers.length - 1 ? "border-b border-slate-100" : ""}`}
-                    >
-                      {/* Klik area menuju profil */}
-                      <Link 
-                        href={`/talent/${member.id}`} 
-                        className="flex items-center gap-4 group transition-all"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Avatar className="h-12 w-12 border-none transition-transform group-hover:scale-105">
-                          <AvatarFallback className="bg-[#5A8D39]/10 text-[#5A8D39] text-sm font-bold">
-                            {member.name?.substring(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
+                {/* 2. Render member lainnya (Hanya yang BUKAN Leader) */}
+                {sortedMembers
+                  .filter((member: any) => member.id !== team.leader_id && member.id !== team.leader?.id) // KUNCINYA DI SINI: Filter Leader agar tidak double
+                  .map((member: any, index: number, filteredArray: any[]) => {
+                    const isMe = member.id.toString() === currentUserId;
 
-                        <div className="space-y-1">
-                          <p className="text-base font-bold text-slate-900 group-hover:text-[#5A8D39] transition-colors">
-                            {isMe ? `You (${member.name})` : member.name}
-                          </p>
-
-                          <div className="flex">
-                            <Badge
-                              variant="outline"
-                              className={`h-7 px-3 gap-1.5 rounded-full border-slate-200 font-bold text-[10px] uppercase tracking-wide ${
-                                isLeader
-                                  ? "text-[#5A8D39] border-[#5A8D39]/30 bg-[#5A8D39]/5"
-                                  : "text-slate-900 bg-white"
-                              }`}
-                            >
-                              {isLeader ? <Crown className="h-3 w-3" /> : <Shield className="h-3 w-3" />}
-                              {isLeader ? "Team Leader" : "Member"}
+                    return (
+                      <div key={member.id} className={`flex items-center justify-between py-4 ${index !== filteredArray.length - 1 ? "border-b border-slate-100" : ""}`}>
+                        <div className="flex items-center gap-4">
+                          <Avatar className="h-12 w-12 border-none">
+                            <AvatarImage src={member.avatar} />
+                            <AvatarFallback className="bg-[#5A8D39]/10 text-[#5A8D39] text-sm font-bold">
+                              {member.name?.substring(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="space-y-1">
+                            <p className="text-base font-bold text-slate-900">
+                              {isMe ? `You (${member.name})` : member.name}
+                            </p>
+                            <Badge variant="outline" className="h-6 px-2 gap-1.5 rounded-full border-slate-200 font-bold text-[9px] uppercase tracking-wide text-slate-900 bg-white">
+                              <Shield className="h-3 w-3" /> Member
                             </Badge>
                           </div>
                         </div>
-                      </Link>
+                      </div>
+                    );
+                  })}
 
-                      {isOwner && !isLeader && (
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onRemoveTrigger(team.name, member.name);
-                          }}
-                          variant="ghost"
-                          className="text-slate-400 hover:text-red-500 hover:bg-transparent flex items-center gap-2"
-                        >
-                          <UserMinus className="h-4 w-4" />
-                          <span className="text-sm font-bold">Remove</span>
-                        </Button>
-                      )}
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="py-8 text-center text-slate-400 text-sm italic font-medium">
-                  No members found.
-                </div>
-              )}
+                {/* Jika tim benar-benar kosong (hanya leader sendirian) */}
+                {sortedMembers.filter((m: any) => m.id !== team.leader_id).length === 0 && (
+                  <div className="py-8 text-center text-slate-400 text-sm italic font-medium">
+                    No other members yet.
+                  </div>
+                )}
+              </div>
             </div>
           </motion.div>
         )}

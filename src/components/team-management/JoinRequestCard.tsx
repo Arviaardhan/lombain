@@ -12,7 +12,7 @@ interface JoinRequestCardProps {
     name: string;
     initials: string;
     appliedRole: string;
-    appliedAt: string;
+    appliedAt?: string;
     bio?: string;
     skills: string[];
   };

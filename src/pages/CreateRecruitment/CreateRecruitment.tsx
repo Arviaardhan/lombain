@@ -17,10 +17,11 @@ export default function CreateRecruitment() {
     title, setTitle, category, setCategory, headline, setHeadline,
     link, setLink, description, setDescription, deadline, setDeadline,
     whatsappLink, setWhatsappLink, resourceLink, setResourceLink,
-    roles, newRole, setNewRole, leaderRole, setLeaderRole, newSkill, setNewSkill,
+    objectives, addObjective, updateObjective, removeObjective,
+    roles, leaderRole, setLeaderRole, newSkill, setNewSkill,
     editingRoleIndex, setEditingRoleIndex, errors, showTitleSuggestions,
     setShowTitleSuggestions, titleSuggestions, titleRef,
-    fieldClass, addRole, updateRoleSlot, addSkillToRole, removeRole, removeSkill,
+    fieldClass, addRole, updateRoleField, addSkillToRole, removeRole, removeSkill,
     handleSubmit, isNextDisabled
   } = useCreateRecruitment();
 
@@ -31,9 +32,25 @@ export default function CreateRecruitment() {
     setShowTitleSuggestions, titleSuggestions, titleRef, fieldClass
   };
 
+  const descriptionProps = {
+    description, setDescription,
+    objectives, addObjective, updateObjective, removeObjective,
+    errors, fieldClass
+  };
+
   const roleProps = {
-    roles, removeRole, removeSkill, editingRoleIndex, setEditingRoleIndex,
-    newSkill, setNewSkill, addSkillToRole, newRole, updateRoleSlot, leaderRole, setLeaderRole, setNewRole, addRole
+    roles,
+    removeRole,
+    removeSkill,
+    editingRoleIndex,
+    setEditingRoleIndex,
+    newSkill,
+    setNewSkill,
+    addSkillToRole,
+    leaderRole,
+    setLeaderRole,
+    addRole,
+    updateRoleField
   };
 
   const allData = {
@@ -69,12 +86,7 @@ export default function CreateRecruitment() {
             >
               {step === 0 && <Step0Info {...infoProps} />}
               {step === 1 && (
-                <Step1Description
-                  description={description}
-                  setDescription={setDescription}
-                  errors={errors}
-                  fieldClass={fieldClass}
-                />
+                <Step1Description {...descriptionProps} />
               )}
               {step === 2 && <RolesStep {...roleProps} />}
 

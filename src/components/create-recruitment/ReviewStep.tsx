@@ -1,127 +1,98 @@
 "use client";
 
-import DetailTeamHeader from "@/components/detail-team/DetailTeamHeader";
-import QuickInfo from "@/components/detail-team/QuickInfo";
-import ListTalent from "@/components/detail-team/ListTalent";
-import TeamResources from "@/components/detail-team/TeamResources";
-import DetailTeamStats from "@/components/detail-team/DetailTeamStats";
+import CompetitionCard from "@/components/explore/CompetitionCard";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Info } from "lucide-react";
+import { Eye, CheckCircle2, Target, Briefcase, Info } from "lucide-react";
 
 export default function ReviewStep(props: any) {
-  const { title, category, headline, deadline, description, roles, resourceLink, leaderRole } = props;
+  const { title, category, headline, deadline, description, objectives, roles, campus, leaderRole } = props;
 
-  const previewTeam = {
-    title: title || "New Amazing Team",
-    category: category || "General",
-    deadline: deadline || new Date().toISOString(),
-    created_at: new Date().toISOString(),
-    description: description || "No description provided.",
-    slots: `1/${roles.length + 1}`,
-    campus: "Your Institution",
-    competitionLink: "#",
-    guidebook_url: resourceLink,
-    allMembers: [
-      {
-        id: 0,
-        name: "You (Leader)",
-        role: leaderRole || "Team Leader",
-        initials: "ME",
-        isLeader: true,
-        avatar: null
-      }
-    ],
-    openRoles: roles.map((r: any, i: number) => ({
-      id: i,
-      role: r.role,
-      skills: r.skills,
-      max_slot: 1
-    }))
+  // LOGIKA INISIAL: Kita ambil huruf pertama dari leaderRole jika nama user tidak ada
+  const myInitials = leaderRole 
+    ? leaderRole.substring(0, 2).toUpperCase() 
+    : "ME";
+
+  const previewPost = {
+    id: "preview",
+    title: title || "Nama Tim Kamu",
+    competition_name: title || "Nama Kompetisi",
+    headline: headline || "Tagline tim kamu akan muncul di sini...",
+    campus: campus || "Institusi Kamu",
+    category: category || "Kategori",
+    posted: "Baru saja",
+    deadline: deadline,
+    lookingFor: roles.map((r: any) => r.role_name),
+    skills: roles.flatMap((r: any) => r.skills || []),
+    total_members: 1,
+    max_members: roles.length + 1,
+    is_closing_soon: false,
+    leader_initials: myInitials, // Kirim inisial ke kartu
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Banner Preview */}
-      <div className="bg-[#5A8D39] text-white p-4 rounded-2xl flex items-center justify-between shadow-lg shadow-green-100/50">
-        <div className="flex items-center gap-3">
-          <Eye className="h-4 w-4" />
-          <div className="min-w-0">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] leading-none mb-1">Live Preview</p>
-            <p className="text-[11px] font-medium opacity-90 truncate">This is how your team looks to others.</p>
-          </div>
+    <div className="space-y-12 animate-in fade-in duration-500">
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 px-1">
+          <Eye className="h-4 w-4 text-[#5A8D39]" />
+          <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Preview Kartu Tim</h3>
+        </div>
+        
+        <div className="w-full">
+          {/* Index dan isReview sekarang sudah aman di CompetitionCard */}
+          <CompetitionCard post={previewPost} index={0} isReview={true} />
         </div>
       </div>
 
-      {/* --- REPLIKA DETAIL TEAM PAGE --- */}
-      {/* Hilangkan scaling berlebihan di mobile, biarkan komponen handle responsivitasnya sendiri */}
-      <div className="rounded-[1.5rem] md:rounded-[2rem] border-2 border-slate-200 bg-[#F9FBFB] overflow-hidden transition-all">
-        <div className="p-3 md:p-8">
-          
-          {/* Kita hanya pakai scaling sedikit di layar desktop agar tidak terlalu lebar, 
-              sedangkan di mobile (hidden scale) kita biarkan full width */}
-          <div className="md:scale-[0.9] lg:scale-100 origin-top transition-all duration-500">
-            
-            <div className="grid gap-4 md:gap-6">
-              {/* Header - Komponen ini sudah responsive (flex-col di mobile) */}
-              <DetailTeamHeader detail={previewTeam} status="idle" onJoin={() => {}} />
+      {/* Detail Informasi di bawah */}
+      <div className="grid gap-8 pt-8 border-t border-slate-100">
+        <div className="space-y-4">
+          <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+             <Info className="h-4 w-4 text-slate-400" /> Visi & Deskripsi
+          </h3>
+          <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100">
+            <p className="text-sm text-slate-600 font-medium leading-relaxed italic whitespace-pre-line">
+              "{description || "Belum ada deskripsi."}"
+            </p>
+          </div>
+        </div>
 
-              {/* Grid yang akan jadi 1 kolom di mobile otomatis karena 'md:grid-cols-3' */}
-              <div className="grid gap-4 md:gap-6 md:grid-cols-3 items-start">
-                
-                {/* Main Content */}
-                <div className="md:col-span-2 space-y-4 md:space-y-6">
-                  {/* About Section */}
-                  <div className="rounded-[1.5rem] md:rounded-[2rem] border border-slate-400 bg-white p-5 md:p-8">
-                    <h2 className="text-[14px] md:text-[16px] font-bold mb-3 md:mb-4 text-slate-900">About Project</h2>
-                    <p className="text-slate-500 text-[12px] md:text-[13px] leading-relaxed whitespace-pre-line font-medium italic">
-                      {previewTeam.description}
-                    </p>
-                  </div>
-
-                  {/* Open Roles */}
-                  <div className="rounded-[1.5rem] md:rounded-[2rem] border border-slate-400 bg-white p-5 md:p-8">
-                    <h2 className="text-[14px] md:text-[16px] font-bold mb-4 md:mb-6 text-slate-900 font-black">Open Roles</h2>
-                    <div className="space-y-3 md:space-y-4">
-                      {previewTeam.openRoles.length > 0 ? previewTeam.openRoles.map((role: any) => (
-                        <div key={role.id} className="p-4 md:p-6 rounded-2xl border border-slate-400 bg-white space-y-2 md:space-y-3">
-                          <h3 className="font-bold text-slate-900 text-[14px] md:text-[16px]">{role.role}</h3>
-                          <div className="flex flex-wrap gap-1.5 pt-1">
-                            {role.skills?.map((skill: string, idx: number) => (
-                              <Badge 
-                                key={idx} 
-                                variant="secondary" 
-                                className="bg-[#F4F7F2] text-[#5A8D39] border-none text-[9px] md:text-[10px] font-medium px-2.5 py-0.5 rounded-full"
-                              >
-                                {skill}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )) : (
-                        <p className="text-[11px] font-bold text-slate-400 italic text-center py-4">No open roles added.</p>
-                      )}
-                    </div>
-                  </div>
+        {/* ... (Objektif & Role Detail tetap sama) */}
+        {objectives && objectives.length > 0 && (
+          <div className="space-y-4">
+            <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+               <Target className="h-4 w-4 text-[#5A8D39]" /> Objektif Tim
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {objectives.map((obj: string, idx: number) => (
+                <div key={idx} className="flex items-center gap-3 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                  <CheckCircle2 className="h-4 w-4 text-[#5A8D39] shrink-0" />
+                  <p className="text-xs text-slate-700 font-bold">{obj}</p>
                 </div>
-
-                {/* Sidebar - Akan pindah ke bawah di mobile */}
-                <aside className="space-y-4 md:space-y-6">
-                  <ListTalent members={previewTeam.allMembers} onMemberClick={() => {}} />
-                  <QuickInfo slots={previewTeam.slots} category={previewTeam.category} campus={previewTeam.campus} />
-                  <TeamResources resourceLink={previewTeam.guidebook_url} resources={[]} />
-                </aside>
-              </div>
+              ))}
             </div>
+          </div>
+        )}
 
+        <div className="space-y-4">
+          <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+             <Briefcase className="h-4 w-4 text-slate-400" /> Detail Role yang Dibutuhkan
+          </h3>
+          <div className="space-y-4">
+            {roles.map((role: any, idx: number) => (
+              <div key={idx} className="p-5 rounded-2xl border border-slate-200 bg-white space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-black text-slate-900 text-sm uppercase">{role.role_name}</h4>
+                  <Badge className="bg-[#F4F7F2] text-[#5A8D39] border-none text-[10px] font-black px-3 py-1">Open</Badge>
+                </div>
+                <div className="pl-4 border-l-2 border-slate-100">
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed italic">
+                    Tanggung Jawab: {role.description || "Tidak ada deskripsi tanggung jawab."}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
-
-      <div className="flex items-center gap-2 text-amber-600 bg-amber-50 p-3 rounded-xl border border-amber-100">
-        <Info className="h-3.5 w-3.5 shrink-0" />
-        <p className="text-[9px] font-bold italic leading-tight">
-          Preview mode: buttons are non-interactive.
-        </p>
       </div>
     </div>
   );

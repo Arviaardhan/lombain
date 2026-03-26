@@ -1,13 +1,11 @@
 export const categories = [
-    { value: "web", label: "Web Development" },
-    { value: "mobile", label: "Mobile Development" },
-    { value: "design", label: "UI/UX Design" },
-    { value: "data", label: "Data Science" },
-    { value: "business", label: "Business Case" },
-    { value: "iot", label: "IoT / Hardware" },
-    { value: "debate", label: "Debate" },
-    { value: "research", label: "Research / Academic" },
-    { value: "creative", label: "Creative / Multimedia" },
+  { label: "Saintek", value: "Saintek" },
+  { label: "Soshum", value: "Soshum" },
+  { label: "Business", value: "Business" },
+  { label: "Technology", value: "Technology" },
+  { label: "Creative & Art", value: "Creative & Art" },
+  { label: "Linguistic", value: "Linguistic" },
+  { label: "Innovation", value: "Innovation" }
 ];
 
 export const competitionSuggestions: Record<string, string[]> = {
